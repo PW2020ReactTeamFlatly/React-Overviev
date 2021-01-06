@@ -12,10 +12,7 @@ import pw.react.backend.utils.JsonDateSerializer;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,8 +55,8 @@ public class Flat implements Serializable {
     //@OneToOne(cascade = CascadeType.ALL)
     //private Reservation reservation;
 
-    @OneToMany(mappedBy="flat")
-    private Set<Reservation> reservations;
+    @OneToMany(mappedBy = "flat")
+    private List<Reservation> reservations;
 
     public Flat() {}
     public Flat(String  Name, int  PricePerNight, String City, String Address, String Information, int Rating )

@@ -49,7 +49,7 @@ public class Reservation implements Serializable {
     //@OneToOne(mappedBy = "reservation")
     //private Flat flat;
     @ManyToOne
-    @JoinColumn(name="flat_id", nullable=false)
+    @JoinColumn(name="flat_id")
     private Flat flat;
 
     public Reservation () {}
