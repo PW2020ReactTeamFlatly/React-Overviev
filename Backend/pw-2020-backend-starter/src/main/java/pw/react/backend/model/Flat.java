@@ -55,6 +55,7 @@ public class Flat implements Serializable {
     //@OneToOne(cascade = CascadeType.ALL)
     //private Reservation reservation;
 
+    //@OneToMany(fetch = FetchType.EAGER)
     @OneToMany(mappedBy = "flat")
     private List<Reservation> reservations;
 
