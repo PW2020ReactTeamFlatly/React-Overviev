@@ -18,7 +18,7 @@ public class FlatController {
     public FlatController(FlatRepository flatRepository) {
         this.flatRepository = flatRepository;
     }
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
     public Collection<Flat> getAllFlats(){
         return flatRepository.findAll();
