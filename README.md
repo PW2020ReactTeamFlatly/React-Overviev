@@ -6,4 +6,3 @@ Project of flatly wednesday group.
 - /WebApp    - frontend React
 - /MobileApp - mobile app ReactNative
 
-...

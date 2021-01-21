@@ -33,11 +33,4 @@ public class FlatController {
     public Flat getFlat(@PathVariable Long flatId){
         return flatRepository.findById(flatId).orElseGet(() -> Flat.EMPTY);
     }
-
-    //@PutMapping(path = "/{flatId}")
-    //public Flat updateFlat(@PathVariable Long flatId,
-    //                       @RequestBody Flat updatedFlat){
-    //    Flat workingFlat;
-    //}
-
 }

@@ -48,8 +48,9 @@ public class Reservation implements Serializable {
 
     //@OneToOne(mappedBy = "reservation")
     //private Flat flat;
+    //@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ManyToOne
-    @JoinColumn(name="flat_id", nullable=false)
+    @JoinColumn(name="flat_id")
     private Flat flat;
 
     public Reservation () {}
@@ -61,6 +62,17 @@ public class Reservation implements Serializable {
         this.price = Price;
         this.sleeps = Sleeps;
     }
+
+    public static Reservation valueOf(ReservationDTO reservationDTO)
+    {
+        return new Reservation(reservationDTO.CustomerName,
+                reservationDTO.StartDateTime,
+                reservationDTO.EndDateTime,
+                reservationDTO.Price,
+                reservationDTO.Sleeps
+        );
+    }
+
     // Getters and Setters should be provided below
 
 }
