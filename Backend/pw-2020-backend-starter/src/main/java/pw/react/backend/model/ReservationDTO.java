@@ -1,7 +1,12 @@
 package pw.react.backend.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 public class ReservationDTO{
     public String CustomerName;
     public LocalDateTime StartDateTime;
