@@ -34,6 +34,7 @@ public class ReservationController {
         this.FlatService = flatService;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
     public Collection<Reservation> getAllReservations(){
         return reservationRepository.findAll();
@@ -46,12 +47,8 @@ public class ReservationController {
         for (ReservationDTO reservationDTO : reservationsDTOs) {
             Flat flat = FlatService.findFlatById(reservationDTO.FlatId);
             Reservation reservation = Reservation.valueOf(reservationDTO);
-<<<<<<< HEAD
-           //reservation.setFlat(flat);
-=======
             reservation = Reservation.valueOf(reservationDTO);
             //reservation.setFlat(flat);
->>>>>>> c8eb1142ee50f954bdec5837e8c7d1bbe4c99514
 
             reservations.add(reservation);
         }
