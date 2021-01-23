@@ -159,6 +159,9 @@ export default function FlatList() {
                     <Button size="small" color="primary">
                       Edit
                     </Button>
+                    <Button size="small" color="primary">
+                      Bookings
+                    </Button>
                   </CardActions>
                 </Card>
               </Grid>

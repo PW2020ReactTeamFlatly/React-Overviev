@@ -46,7 +46,7 @@ public class ReservationController {
         for (ReservationDTO reservationDTO : reservationsDTOs) {
             Flat flat = FlatService.findFlatById(reservationDTO.FlatId);
             Reservation reservation = Reservation.valueOf(reservationDTO);
-            reservation.setFlat(flat);
+           //reservation.setFlat(flat);
 
             reservations.add(reservation);
         }
