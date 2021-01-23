@@ -40,13 +40,18 @@ public class ReservationController {
     }
 
     @PostMapping(path = "")
-    public Collection<Reservation> createReservations(@RequestBody List<ReservationDTO> reservationsDTOs){
+    public Collection<Reservation> createReservations(@RequestBody Collection<ReservationDTO> reservationsDTOs){
         List<Reservation> reservations = new ArrayList<Reservation>();
 
         for (ReservationDTO reservationDTO : reservationsDTOs) {
             Flat flat = FlatService.findFlatById(reservationDTO.FlatId);
             Reservation reservation = Reservation.valueOf(reservationDTO);
+<<<<<<< HEAD
            //reservation.setFlat(flat);
+=======
+            reservation = Reservation.valueOf(reservationDTO);
+            //reservation.setFlat(flat);
+>>>>>>> c8eb1142ee50f954bdec5837e8c7d1bbe4c99514
 
             reservations.add(reservation);
         }
