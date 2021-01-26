@@ -21,8 +21,8 @@ function Main(){
     return (
         <BrowserRouter>
             <Switch>
+                <Route path='/flatlist/:id' component={FlatListWithId}/>
                 <Route path='/flatlist' component={FlatList}/>
-                <Route exact path='/flatlist/:id' component={FlatListWithId}/>
                 <Route path='/addflat' component={CreateFlat}/>
                 <Route path='/bookings' component={BookingsList}/>
                 <Redirect to='/flatlist' />

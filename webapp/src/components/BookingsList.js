@@ -22,6 +22,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SnackbarContext from '../contexts/SnackbarContext';
 import LoadingContext from '../contexts/LoadingContext';
+import Button from '@material-ui/core/Button';
+import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 
 function descendingComparator(a, b, orderBy) {
@@ -148,6 +150,14 @@ const EnhancedTableToolbar = (props) => {
         [classes.highlight]: numSelected > 0,
       })}
     >
+      <Button
+      variant="contained"
+      color="primary" 
+      style={{ marginLeft: "auto" }}
+      component={RouterLink} to="/flatlist">
+        Back
+      </Button>
+
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
           {numSelected} selected

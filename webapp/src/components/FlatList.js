@@ -153,8 +153,10 @@ export default function FlatList() {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small" color="primary">
-                      View
+                    <Button size="small" color="primary" >
+                      <RouterLink  to={"/flatlist/"+flat.id}>
+                        View
+                      </RouterLink>
                     </Button>
                     <Button size="small" color="primary">
                       Edit
