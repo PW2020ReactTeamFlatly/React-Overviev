@@ -24,11 +24,13 @@ public class FlatController {
         return flatRepository.findAll();
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(path = "")
     public Collection<Flat> createFlats(@RequestBody List<Flat> flats){
         return flatRepository.saveAll(flats);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/{flatId}")
     public Flat getFlat(@PathVariable Long flatId){
         return flatRepository.findById(flatId).orElseGet(() -> Flat.EMPTY);
