@@ -15,17 +15,39 @@ import java.util.List;
 class FlatMainService implements FlatService {
     private final Logger logger = LoggerFactory.getLogger(FlatMainService.class);
 
-    private FlatRepository repository;
+    private FlatRepository flatRepository;
 
     FlatMainService() { /*Needed only for initializing spy in unit tests*/}
 
     @Autowired
-    FlatMainService(FlatRepository repository) {
-        this.repository = repository;
+    FlatMainService(FlatRepository flatRepository) {
+        this.flatRepository = flatRepository;
+    }
+
+    @Override
+    public Flat updateFlat(Long id, Flat updatedFlat) {
+        Flat result = Flat.EMPTY;
+        if (flatRepository.existsById(id)) {
+            updatedFlat.setId(id);
+            result = flatRepository.save(updatedFlat);
+            logger.info("Flat with id {} updated.", id);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean deleteFlat(Long flatId) {
+        boolean result = false;
+        if (flatRepository.existsById(flatId)) {
+            flatRepository.deleteById(flatId);
+            logger.info("Flat with id {} deleted.", flatId);
+            result = true;
+        }
+        return result;
     }
 
     @Override
     public Flat findFlatById(long id) {
-        return repository.findById(id).orElseGet(() -> Flat.EMPTY);
+        return flatRepository.findById(id).orElseGet(() -> Flat.EMPTY);
     }
 }
