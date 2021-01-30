@@ -1,6 +1,7 @@
 package pw.react.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -56,8 +57,13 @@ public class Flat implements Serializable {
     //private Reservation reservation;
 
     //@OneToMany(fetch = FetchType.EAGER)
-    @OneToMany(mappedBy = "flat")
-    private List<Reservation> reservations;
+    //@OneToMany(mappedBy = "flat")
+    //private List<Reservation> reservations;
+
+    @JsonManagedReference
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="FLAT_ID")
+    private Set<Reservation> reservations;
 
     public Flat() {}
     public Flat(String  Name, int  PricePerNight, String City, String Address, String Information, int Rating )

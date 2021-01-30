@@ -1,5 +1,6 @@
 package pw.react.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -50,7 +51,11 @@ public class Reservation implements Serializable {
     //private Flat flat;
     //@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     //@ManyToOne
-    @JoinColumn(name="flat_id")
+    //@JoinColumn(name="flat_id")
+    //private Flat flat;
+
+    @JsonBackReference
+    @ManyToOne
     private Flat flat;
 
     public Reservation () {}

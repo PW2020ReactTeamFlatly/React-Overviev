@@ -46,13 +46,7 @@ public class ReservationController {
             logger.error("KAWABUNGA: " + flat.getName());
             logger.error("KAWABUNGA: " + flat.getId());
 
-            //<TODO>
-            //GENERALNIE TO Z TEGO CO TESTOWALEM TO JUZ POPRAWNIE SZUKA TEGO FLATA W BAZIE DANYCH
-            //KLOPOT JEST JEDNAK Z TYM, ŻE SET FLAT WYKRZACZA SIĘ GDY REZERWACJI PRÓBUJĘ PRZYPISAC JUZ ISTNIEJACEGO FLATA
-            //PRAWDOPODOBNE ROZWIĄZANIE: ZMIENIC COS W KLASACH RESERVATION I FLAT TAK BO ONETOMANY JEST ŹLE (MEGA ŹLE
-            //NIE DZIAłA TAK JAK POWINNO - TO NAPEWNO)
-            //<TODO>
-            reservation.setFlat(Flat.EMPTY);
+            reservation.setFlat(flat);
 
             reservations.add(reservation);
         }
