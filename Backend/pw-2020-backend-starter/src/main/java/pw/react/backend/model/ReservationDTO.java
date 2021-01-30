@@ -2,18 +2,20 @@ package pw.react.backend.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import pw.react.backend.service.FlatService;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class ReservationDTO{
+
     public String CustomerName;
     public LocalDateTime StartDateTime;
     public LocalDateTime EndDateTime;
     public int Price;
     public int Sleeps;
-    public long FlatId;
+    private Long FlatId;
 
     public ReservationDTO() {}
     public ReservationDTO(String customerName,
@@ -21,7 +23,8 @@ public class ReservationDTO{
                           LocalDateTime endDateTime,
                           int price,
                           int sleeps,
-                          long flatId) {
+                          Long flatId)
+    {
         this.CustomerName = customerName;
         this.StartDateTime = startDateTime;
         this.EndDateTime = endDateTime;
@@ -29,4 +32,11 @@ public class ReservationDTO{
         this.Sleeps = sleeps;
         this.FlatId = flatId;
     }
+
+    public Flat findFlatById(FlatService flatService)
+    {
+        Flat result = flatService.findFlatById(this.FlatId);
+        return result;
+    }
+
 }

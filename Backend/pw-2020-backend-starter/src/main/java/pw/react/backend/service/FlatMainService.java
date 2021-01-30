@@ -47,7 +47,7 @@ class FlatMainService implements FlatService {
     }
 
     @Override
-    public Flat findFlatById(long id) {
+    public Flat findFlatById(Long id) {
         return flatRepository.findById(id).orElseGet(() -> Flat.EMPTY);
     }
 }

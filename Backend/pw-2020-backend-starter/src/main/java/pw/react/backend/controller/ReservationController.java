@@ -25,21 +25,34 @@ public class ReservationController {
     private final ReservationRepository reservationRepository;
     private final ReservationService reservationService;
 
+    private FlatService flatService;
+
     @Autowired
-    public ReservationController(ReservationRepository reservationRepository, ReservationService reservationService) {
+    public ReservationController(ReservationRepository reservationRepository, ReservationService reservationService, FlatService flatService) {
         this.reservationRepository = reservationRepository;
         this.reservationService = reservationService;
+        this.flatService = flatService;
     }
 
     @PostMapping(path = "")
-    public Collection<Reservation> createReservations(@RequestBody Collection<ReservationDTO> reservationsDTOs){
+    public Collection<Reservation> createReservations(@RequestBody Collection<ReservationDTO> reservationsDTOs) {
         List<Reservation> reservations = new ArrayList<Reservation>();
-
         for (ReservationDTO reservationDTO : reservationsDTOs) {
-            //Flat flat = FlatService.findFlatById(reservationDTO.FlatId);
+
             Reservation reservation = Reservation.valueOf(reservationDTO);
             reservation = Reservation.valueOf(reservationDTO);
-            //reservation.setFlat(flat);
+
+            Flat flat = flatService.findFlatById(reservationDTO.getFlatId());
+            logger.error("KAWABUNGA: " + flat.getName());
+            logger.error("KAWABUNGA: " + flat.getId());
+
+            //<TODO>
+            //GENERALNIE TO Z TEGO CO TESTOWALEM TO JUZ POPRAWNIE SZUKA TEGO FLATA W BAZIE DANYCH
+            //KLOPOT JEST JEDNAK Z TYM, ŻE SET FLAT WYKRZACZA SIĘ GDY REZERWACJI PRÓBUJĘ PRZYPISAC JUZ ISTNIEJACEGO FLATA
+            //PRAWDOPODOBNE ROZWIĄZANIE: ZMIENIC COS W KLASACH RESERVATION I FLAT TAK BO ONETOMANY JEST ŹLE (MEGA ŹLE
+            //NIE DZIAłA TAK JAK POWINNO - TO NAPEWNO)
+            //<TODO>
+            reservation.setFlat(Flat.EMPTY);
 
             reservations.add(reservation);
         }
@@ -49,20 +62,20 @@ public class ReservationController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/{reservationId}")
-    public Reservation getReservation(@PathVariable Long reservationId){
+    public Reservation getReservation(@PathVariable Long reservationId) {
         return reservationRepository.findById(reservationId).orElseGet(() -> Reservation.EMPTY);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
-    public Collection<Reservation> getAllReservations(){
+    public Collection<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping(path = "/{reservationId}")
     public Reservation updateFlat(@PathVariable Long reservationId,
-                           @RequestBody Reservation updatedReservation) {
+                                  @RequestBody Reservation updatedReservation) {
         Reservation result;
         result = reservationService.updateReservation(reservationId, updatedReservation);
         return result;
