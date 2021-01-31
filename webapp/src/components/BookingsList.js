@@ -133,13 +133,62 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
-
-  const selected = props.selected;
-  const setSetelected = props.setSelected;
+  const { numSelected, selected, setSelected, setBookings } = props;
+  const { setLoading } = useContext(LoadingContext);
+  const { setSnackbar } = useContext(SnackbarContext);
 
   const onDeleteClick = () => {
-    console.log("delete invoke");
+    var axios = require('axios');
+    var data = '';
+
+    setLoading(true);
+    selected.forEach(element => {
+    
+      var config = {
+        method: 'delete',
+        url: 'http://localhost:8080/reservations/'+element,
+        headers: { 
+          'security-header': 'secureMe'
+        },
+        data : data
+      };
+
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .then(()=>{
+        async function fetchData() {
+          try {
+              const flatData = await axios.get('http://localhost:8080/reservations');
+              console.log(flatData.data)
+              setBookings(flatData.data);
+          } catch (error) {
+              console.error(error);
+              setSnackbar({
+                  open: true,
+                  message: "Błąd ładowania danych",
+                  type: "error"
+              });
+          }
+      }
+    
+      fetchData();
+
+      })
+      .catch(function (error) {
+        console.error(error);
+                setSnackbar({
+                    open: true,
+                    message: "Błąd ładowania danych",
+                    type: "error"
+                });
+      });    
+    });
+
+    setSelected([]);
+    setLoading(false);    
+
   };
 
   return (
@@ -177,9 +226,6 @@ const EnhancedTableToolbar = (props) => {
   );
 };
 
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -280,7 +326,7 @@ export default function EnhancedTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setBookings={setBookings} setSelected={setSelected}/>
         <TableContainer>
           <Table
             className={classes.table}
