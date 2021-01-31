@@ -22,7 +22,7 @@ import java.util.List;
 import static java.util.stream.Collectors.joining;
 
 @RestController
-@RequestMapping(path = "/companies") //testowy komentarz
+@RequestMapping(path = "/companies")
 public class CompanyController {
     private final Logger logger = LoggerFactory.getLogger(CompanyController.class);
 

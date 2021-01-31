@@ -15,7 +15,7 @@ public class ReservationDTO{
     public LocalDateTime EndDateTime;
     public int Price;
     public int Sleeps;
-    private Long FlatId;
+    public Long FlatId;
 
     public ReservationDTO() {}
     public ReservationDTO(String customerName,
