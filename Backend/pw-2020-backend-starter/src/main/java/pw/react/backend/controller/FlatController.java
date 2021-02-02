@@ -13,6 +13,7 @@ import pw.react.backend.dao.CompanyRepository;
 import pw.react.backend.dao.FlatRepository;
 import pw.react.backend.model.Company;
 import pw.react.backend.model.Flat;
+import pw.react.backend.model.Reservation;
 import pw.react.backend.service.CompanyService;
 import pw.react.backend.service.FlatService;
 import pw.react.backend.service.SecurityProvider;
@@ -47,6 +48,12 @@ public class FlatController {
     @GetMapping(path = "/{flatId}")
     public Flat getFlat(@PathVariable Long flatId){
         return flatRepository.findById(flatId).orElseGet(() -> Flat.EMPTY);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "/res/{flatId}")
+    public Collection<Reservation> getReservationsByFlat(@PathVariable Long flatId){
+        return flatService.getReservationsByFlatId(flatId);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
