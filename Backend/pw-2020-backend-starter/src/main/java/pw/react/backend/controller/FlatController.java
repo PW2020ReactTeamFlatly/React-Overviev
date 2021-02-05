@@ -17,6 +17,7 @@ import pw.react.backend.model.Reservation;
 import pw.react.backend.service.CompanyService;
 import pw.react.backend.service.FlatService;
 import pw.react.backend.service.SecurityProvider;
+import pw.react.backend.utils.PagedResponse;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,10 +89,40 @@ public class FlatController {
             it.next();
             i += 1;
         }
-
-
         return result;
     }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "/pagedresponse/{pageId}")
+    public PagedResponse<Collection<Flat>> getPagedResponse(@PathVariable Long pageId){
+        Collection<Flat> flats = flatRepository.findAll();
+        ArrayList<Flat> result = new ArrayList<Flat>();
+
+        Iterator<Flat> it = flats.iterator();
+        long index = 10 * pageId;
+        long i = 0;
+        int pageSize = 0;
+        while(it.hasNext())
+        {
+            if(i == index)
+            {
+                for(int j = 0; j < 10; j++)
+                {
+                    result.add(it.next());
+                    pageSize+=1;
+                    if(!it.hasNext())
+                        break;;
+                }
+                break;
+            }
+            it.next();
+            i += 1;
+        }
+        int pID = pageId.intValue();
+        return new PagedResponse<Collection<Flat>>(result, pID, pageSize, pID + 1);
+    }
+
+
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping(path = "/{flatId}")
