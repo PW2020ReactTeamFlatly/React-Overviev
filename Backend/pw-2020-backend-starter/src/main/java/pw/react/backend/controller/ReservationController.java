@@ -43,10 +43,10 @@ public class ReservationController {
             reservation = Reservation.valueOf(reservationDTO);
 
             Flat flat = flatService.findFlatById(reservationDTO.getFlatId());
-            logger.error("KAWABUNGA: " + flat.getName());
+            logger.error("MACIEK: " + flat.getName());
             logger.error("KAWABUNGA: " + flat.getId());
 
-            reservation.setFlat(flat);
+                reservation.setFlat(flat);
 
             reservations.add(reservation);
         }
