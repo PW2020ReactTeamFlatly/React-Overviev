@@ -18,7 +18,9 @@ import pw.react.backend.service.CompanyService;
 import pw.react.backend.service.FlatService;
 import pw.react.backend.service.SecurityProvider;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -60,6 +62,35 @@ public class FlatController {
     @GetMapping(path = "")
     public Collection<Flat> getAllFlats(){
         return flatRepository.findAll();
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "/page/{pageId}")
+    public Collection<Flat> getPage(@PathVariable Long pageId){
+        Collection<Flat> flats = flatRepository.findAll();
+        ArrayList<Flat> result = new ArrayList<Flat>();
+
+        Iterator<Flat> it = flats.iterator();
+        long index = 10 * pageId;
+        long i = 0;
+        while(it.hasNext())
+        {
+            if(i == index)
+            {
+                for(int j = 0; j < 10; j++)
+                {
+                    result.add(it.next());
+                    if(!it.hasNext())
+                        break;;
+                }
+                break;
+            }
+            it.next();
+            i += 1;
+        }
+
+
+        return result;
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
