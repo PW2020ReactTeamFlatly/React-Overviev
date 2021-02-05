@@ -47,6 +47,9 @@ public class Flat implements Serializable {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "sleeps")
+    private int sleeps;
+
     @Column(name = "information")
     private String information;
 
@@ -66,12 +69,13 @@ public class Flat implements Serializable {
     private Set<Reservation> reservations;
 
     public Flat() {}
-    public Flat(String  Name, int  PricePerNight, String City, String Address, String Information, int Rating )
+    public Flat(String  Name, int  PricePerNight, String City, String Address, int Sleeps, String Information, int Rating )
     {
         this.name = Name;
         this.pricePerNight = PricePerNight;
         this.city = City;
         this.address = Address;
+        this.sleeps = Sleeps;
         this.information = Information;
         this.rating = Rating;
     }

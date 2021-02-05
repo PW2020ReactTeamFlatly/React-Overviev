@@ -41,6 +41,8 @@ class FlatMainService implements FlatService {
                 updatedFlat.setCity(oldFlat.getCity());
             if(updatedFlat.getAddress() == null)
                 updatedFlat.setAddress(oldFlat.getAddress());
+            if(updatedFlat.getSleeps() == 0)
+                updatedFlat.setSleeps(oldFlat.getSleeps());
             if(updatedFlat.getInformation() == null)
                 updatedFlat.setInformation(oldFlat.getInformation());
             if(updatedFlat.getRating() == 0)

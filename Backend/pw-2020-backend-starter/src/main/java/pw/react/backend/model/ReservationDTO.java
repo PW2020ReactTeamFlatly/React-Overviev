@@ -14,7 +14,7 @@ public class ReservationDTO{
     public LocalDateTime StartDateTime;
     public LocalDateTime EndDateTime;
     public int Price;
-    public int Sleeps;
+    public int Persons;
     public Long FlatId;
 
     public ReservationDTO() {}
@@ -22,14 +22,14 @@ public class ReservationDTO{
                           LocalDateTime startDateTime,
                           LocalDateTime endDateTime,
                           int price,
-                          int sleeps,
+                          int persons,
                           Long flatId)
     {
         this.CustomerName = customerName;
         this.StartDateTime = startDateTime;
         this.EndDateTime = endDateTime;
         this.Price = price;
-        this.Sleeps = sleeps;
+        this.Persons = persons;
         this.FlatId = flatId;
     }
 
