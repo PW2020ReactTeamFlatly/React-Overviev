@@ -27,7 +27,6 @@ import static java.util.stream.Collectors.joining;
 @RequestMapping(path = "/flats")
 public class FlatController {
     private final Logger logger = LoggerFactory.getLogger(CompanyController.class);
-
     private final FlatRepository flatRepository;
     private final FlatService flatService;
 
