@@ -41,32 +41,32 @@ public class FlatController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(path = "")
-    public Collection<Flat> createFlats(@RequestBody List<Flat> flats){
+    public ResponseEntity<String> createFlats(@RequestBody List<Flat> flats) {
         List<Flat> result = flatRepository.saveAll(flats);
-        return result;
+        return ResponseEntity.ok(result.stream().map(c -> String.valueOf(c.getId())).collect(joining(",")));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/{flatId}")
-    public Flat getFlat(@PathVariable Long flatId){
-        return flatRepository.findById(flatId).orElseGet(() -> Flat.EMPTY);
+    public ResponseEntity<Flat>  getFlat(@PathVariable Long flatId){
+        return ResponseEntity.ok(flatRepository.findById(flatId).orElseGet(() -> Flat.EMPTY));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/res/{flatId}")
-    public Collection<Reservation> getReservationsByFlat(@PathVariable Long flatId){
-        return flatService.getReservationsByFlatId(flatId);
+    public ResponseEntity<Collection<Reservation>> getReservationsByFlatId(@PathVariable Long flatId){
+        return ResponseEntity.ok(flatService.getReservationsByFlatId(flatId));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
-    public Collection<Flat> getAllFlats(){
-        return flatRepository.findAll();
+    public ResponseEntity<Collection<Flat>> getAllFlats(){
+        return ResponseEntity.ok(flatRepository.findAll());
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/page/{pageId}")
-    public Collection<Flat> getPage(@PathVariable Long pageId){
+    public ResponseEntity<Collection<Flat>> getPage(@PathVariable Long pageId){
         Collection<Flat> flats = flatRepository.findAll();
         ArrayList<Flat> result = new ArrayList<Flat>();
 
@@ -88,12 +88,12 @@ public class FlatController {
             it.next();
             i += 1;
         }
-        return result;
+        return ResponseEntity.ok(result);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/pagedresponse/{pageId}")
-    public PagedResponse<Collection<Flat>> getPagedResponse(@PathVariable Long pageId){
+    public ResponseEntity<PagedResponse<Collection<Flat>>> getPagedResponse(@PathVariable Long pageId){
         Collection<Flat> flats = flatRepository.findAll();
         ArrayList<Flat> result = new ArrayList<Flat>();
 
@@ -118,10 +118,8 @@ public class FlatController {
             i += 1;
         }
         int pID = pageId.intValue();
-        return new PagedResponse<Collection<Flat>>(result, pID, pageSize, pID + 1);
+        return ResponseEntity.ok(new PagedResponse<Collection<Flat>>(result, pID, pageSize, pID + 1));
     }
-
-
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping(path = "/{flatId}")
