@@ -60,6 +60,7 @@ public class ReservationController {
         return reservationRepository.findById(reservationId).orElseGet(() -> Reservation.EMPTY);
     }
 
+
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
     public Collection<Reservation> getAllReservations() {
