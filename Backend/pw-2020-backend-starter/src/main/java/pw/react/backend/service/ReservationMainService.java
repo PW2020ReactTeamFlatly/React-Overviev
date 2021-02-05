@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pw.react.backend.dao.CompanyRepository;
 import pw.react.backend.dao.ReservationRepository;
-import pw.react.backend.model.Company;
-import pw.react.backend.model.Flat;
 import pw.react.backend.model.Reservation;
 
 @Service
@@ -37,8 +34,8 @@ class ReservationMainService implements ReservationService {
                 updatedReservation.setEndDateTime(oldReservation.getEndDateTime());
             if(updatedReservation.getPrice() == 0)
                 updatedReservation.setPrice(oldReservation.getPrice());
-            if(updatedReservation.getSleeps() == 0)
-                updatedReservation.setSleeps(oldReservation.getSleeps());
+            if(updatedReservation.getPersons() == 0)
+                updatedReservation.setPersons(oldReservation.getPersons());
             if(updatedReservation.getCustomerName() == null)
                 updatedReservation.setCustomerName(oldReservation.getCustomerName());
             result = reservationRepository.save(updatedReservation);

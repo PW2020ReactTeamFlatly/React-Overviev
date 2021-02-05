@@ -55,7 +55,7 @@ const headCells = [
   { id: 'startDate', numeric: false, disablePadding: false, label: 'Start date' },
   { id: 'endDate', numeric: false, disablePadding: false, label: 'End date' },
   { id: 'price', numeric: true, disablePadding: false, label: 'Price' },
-  { id: 'sleeps', numeric: true, disablePadding: false, label: 'Sleeps' },
+  { id: 'persons', numeric: true, disablePadding: false, label: 'Sleeps' },
   { id: 'flat_id', numeric: true, disablePadding: false, label: 'Flat' }
 ];
 
