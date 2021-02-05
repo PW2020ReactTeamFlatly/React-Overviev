@@ -69,7 +69,7 @@ public class ReservationController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping(path = "/{reservationId}")
-    public Reservation updateFlat(@PathVariable Long reservationId,
+    public Reservation updateReservation(@PathVariable Long reservationId,
                                   @RequestBody Reservation updatedReservation) {
         Reservation result;
         result = reservationService.updateReservation(reservationId, updatedReservation);

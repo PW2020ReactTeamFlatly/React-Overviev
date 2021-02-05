@@ -27,12 +27,26 @@ class ReservationMainService implements ReservationService {
     public Reservation updateReservation(Long id, Reservation updatedReservation) {
         Reservation result = Reservation.EMPTY;
         if (reservationRepository.existsById(id)) {
+            Reservation oldReservation = reservationRepository.findById(id).orElseGet(() -> Reservation.EMPTY);
             updatedReservation.setId(id);
+            updatedReservation.setIdFlat(oldReservation.getIdFlat());
+            updatedReservation.setFlat(oldReservation.getFlat());
+            if(updatedReservation.getStartDateTime() == null)
+                updatedReservation.setStartDateTime(oldReservation.getStartDateTime());
+            if(updatedReservation.getEndDateTime() == null)
+                updatedReservation.setEndDateTime(oldReservation.getEndDateTime());
+            if(updatedReservation.getPrice() == 0)
+                updatedReservation.setPrice(oldReservation.getPrice());
+            if(updatedReservation.getSleeps() == 0)
+                updatedReservation.setSleeps(oldReservation.getSleeps());
+            if(updatedReservation.getCustomerName() == null)
+                updatedReservation.setCustomerName(oldReservation.getCustomerName());
             result = reservationRepository.save(updatedReservation);
             logger.info("Reservation with id {} updated.", id);
         }
         return result;
     }
+
 
     @Override
     public boolean deleteReservation(Long reservationId) {

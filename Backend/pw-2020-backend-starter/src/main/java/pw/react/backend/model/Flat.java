@@ -75,6 +75,8 @@ public class Flat implements Serializable {
         this.information = Information;
         this.rating = Rating;
     }
+
+
     // Getters and Setters should be provided below
 
 }
