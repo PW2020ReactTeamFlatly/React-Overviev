@@ -46,7 +46,7 @@ public class ReservationController {
             logger.error("BYLECO: " + flat.getName());
             logger.error("KAWABUNGA: " + flat.getId());
 
-            reservation.setFlat(flat);
+                reservation.setFlat(flat);
 
             reservations.add(reservation);
         }
