@@ -114,7 +114,38 @@ export default function FlatList() {
       SetPage(page-1);
     }
   }
+  const deleteFlat = async (flatId) => {
 
+        try
+        {
+          await axios.delete('http://localhost:8080/flats/' + flatId);
+        }
+        catch(error) {
+          console.error(error);
+          setSnackbar({
+              open: true,
+              message: "Błąd usuwania danych",
+              type: "error"
+          });
+        }
+
+        setLoading(true);
+        try {
+            const flatData = await axios.get('http://localhost:8080/flats');
+            SetFlats(flatData.data);
+        } catch (error) {
+            console.error(error);
+            setSnackbar({
+                open: true,
+                message: "Błąd ładowania danych",
+                type: "error"
+            });
+        }
+        setLoading(false);
+  }
+
+
+  
   return (
     <React.Fragment>
       <CssBaseline />
@@ -190,6 +221,9 @@ export default function FlatList() {
                       <RouterLink  to={"/booking/"+flat.id}>
                         Bookings
                       </RouterLink>
+                    </Button>
+                    <Button size="small" color="primary" onClick={()=>deleteFlat(flat.id)}>
+                      Delete
                     </Button>
                   </CardActions>
                 </Card>

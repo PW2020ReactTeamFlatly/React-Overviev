@@ -147,35 +147,3 @@ export default function FlatView(props) {
 
   );
 }
-
-
-/*export default function FlatView(props) {
-    const {flatId} = props;
-
-    const { setLoading } = useContext(LoadingContext);
-  const { setSnackbar } = useContext(SnackbarContext);
-  const [flats,SetFlats] = useState([]);
-    useEffect(() => {
-        async function fetchData() {
-            setLoading(true);
-            try {
-                const flatData = await axios.get('http://localhost:8080/flats/'+ flatId);
-                SetFlats(flatData.data);
-            } catch (error) {
-                console.error(error);
-                setSnackbar({
-                    open: true,
-                    message: "Błąd ładowania danych",
-                    type: "error"
-                });
-            }
-            setLoading(false);
-        }
-
-        fetchData();
-    }, [SetFlats, setLoading, setSnackbar,]);
-
-    return (
-        <div> FlatView + {flats.name} </div>
-    );
-}*/

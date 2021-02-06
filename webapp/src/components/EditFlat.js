@@ -67,8 +67,9 @@ export default function EditFlat(props) {
   const [address, setAddress] = React.useState("");
   const [city, setCity] = React.useState("");
   const [price, setPrice] = React.useState("");
-  const [btnDisabled, setBtnDisabled] = useState(false)
   const [info, setInfo] = React.useState("");
+  const [sleeps, setSleeps] = React.useState("");
+  const [rating, setRating] = React.useState("");
   const [posted, setPosted] = useState(true);
   const [flat, SetFlat] = useState([]);
   const { setLoading } = useContext(LoadingContext);
@@ -93,6 +94,10 @@ export default function EditFlat(props) {
           setPrice(flatData.data.pricePerNight);
         if (flatData.data.information != null)
           setInfo(flatData.data.information);
+        if (flatData.data.rating != null)
+          setRating(flatData.data.rating);
+        if (flatData.data.sleeps != null)
+          setSleeps(flatData.data.sleeps);
 
       } catch (error) {
         console.error(error);
@@ -111,36 +116,28 @@ export default function EditFlat(props) {
 
   const handleNameChange = (event) => {
     setName(event.target.value);
-    btnEnablingCheck();
   }
 
   const handleAddressChange = (event) => {
     setAddress(event.target.value);
-    btnEnablingCheck();
   }
   const handleCityChange = (event) => {
     setCity(event.target.value);
-    btnEnablingCheck();
   }
   const handlePriceChange = (event) => {
     setPrice(event.target.value);
-    btnEnablingCheck();
   }
 
   const handleInfoChange = (event) => {
     setInfo(event.target.value);
-    btnEnablingCheck();
   }
 
-  const btnEnablingCheck = () => {
-    console.log(name.length);
-    console.log(address.length);
-    console.log(city.length);
-    console.log(price.toString().length);
-    console.log(info.length);
-    if (name.length > 0 && address.length > 0 && city.length > 0 && price.length > 0 && info.length > 0)
-      setBtnDisabled(false);
-  }
+  const handleSleepsChange = (event) =>{
+    setSleeps(event.target.value);
+}
+const handleRatingChange = (event) =>{
+  setRating(event.target.value);
+}
 
   const variable = {
     id: flatId,
@@ -149,6 +146,8 @@ export default function EditFlat(props) {
     pricePerNight: price,
     address: address,
     information: info,
+    sleeps:sleeps,
+    rating:rating,
   };
 
   const handleNext = async () => {
@@ -252,6 +251,17 @@ export default function EditFlat(props) {
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <TextField
+                          id="sleeps"
+                          name="sleeps"
+                          label="Sleeps"
+                          fullWidth
+                          required
+                          value={sleeps}
+                          onChange={(event) => handleSleepsChange(event)}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
                           id="pricePerNight"
                           name="pricePerNight"
                           label="Price per night"
@@ -259,6 +269,17 @@ export default function EditFlat(props) {
                           required
                           value={price}
                           onChange={(event) => handlePriceChange(event)}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          id="rating"
+                          name="rating"
+                          label="Rating"
+                          fullWidth
+                          required
+                          value={rating}
+                          onChange={(event) => handleRatingChange(event)}
                         />
                       </Grid>
                       <Grid item xs={12} sm={12}>
@@ -287,7 +308,6 @@ export default function EditFlat(props) {
                       color="primary"
                       onClick={handleNext}
                       className={classes.button}
-                      disabled={btnDisabled}
                     >
                       {activeStep === steps.length - 1 ? 'Confirm changes' : 'Next'}
                     </Button>
