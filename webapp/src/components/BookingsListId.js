@@ -251,7 +251,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -261,13 +261,15 @@ export default function EnhancedTable() {
   const { setSnackbar } = useContext(SnackbarContext);
   const [bookings, setBookings] = useState([]);
 
+  const {flatId} = props;
 
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            console.log("HERE");
             try {
-                const flatData = await axios.get('http://localhost:8080/reservations/');
+                console.log(flatId);
+                console.log("SIUUHUUU");
+                const flatData = await axios.get(`http://localhost:8080/flats/res/${flatId}`);
                 setBookings(flatData.data);
             } catch (error) {
                 console.error(error);
