@@ -374,8 +374,9 @@ export default function EnhancedTable(props) {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {row.customerName}
                       </TableCell>
-                      <TableCell align="middle">{row.startDateTime}</TableCell>
-                      <TableCell align="middle">{row.endDateTime}</TableCell>
+                      <TableCell align="middle">{row.startDateTime ? row.startDateTime.substring(8,10) + "." + row.startDateTime.substring(5,7) + "." + row.startDateTime.substring(0,4) : ""}</TableCell>
+                      <TableCell align="middle">{row.startDateTime ? row.endDateTime.substring(8,10) + "." + row.endDateTime.substring(5,7) + "." + row.endDateTime.substring(0,4) : ""}</TableCell>
+                      
                       <TableCell align="right">{row.price}</TableCell>
                       <TableCell align="right">{row.persons}</TableCell>
                       <TableCell align="right">{row.idFlat}</TableCell>
