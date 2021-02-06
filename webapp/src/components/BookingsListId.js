@@ -133,7 +133,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, selected, setSelected, setBookings } = props;
+  const { numSelected, selected, setSelected, setBookings, flatId } = props;
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
 
@@ -160,7 +160,7 @@ const EnhancedTableToolbar = (props) => {
       .then(()=>{
         async function fetchData() {
           try {
-              const flatData = await axios.get('http://localhost:8080/reservations');
+              const flatData = await axios.get('http://localhost:8080/flats/res/'+flatId);
               console.log(flatData.data)
               setBookings(flatData.data);
           } catch (error) {
@@ -331,7 +331,7 @@ export default function EnhancedTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setBookings={setBookings} setSelected={setSelected}/>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setBookings={setBookings} setSelected={setSelected} flatId={flatId}/>
         <TableContainer>
           <Table
             className={classes.table}
