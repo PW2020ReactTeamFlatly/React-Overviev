@@ -27,6 +27,9 @@ import axios from 'axios';
 import SnackbarContext from '../contexts/SnackbarContext';
 import LoadingContext from '../contexts/LoadingContext';
 import { Link as RouterLink } from 'react-router-dom';
+//import AddressForm from './AddressForm';
+//import PaymentForm from './PaymentForm';
+//import Review from './Review';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -67,7 +70,20 @@ const useStyles = makeStyles((theme) => ({
   
   const steps = ['New flat'];
   
-  export default function CreateFlat() {
+//   function getStepContent(step) {
+//     switch (step) {
+//       case 0:
+//         return <AddressFormm />;
+//       case 1:
+//         return <PaymentForm />;
+//       case 2:
+//         return <Review />;
+//       default:
+//         throw new Error('Unknown step');
+//     }
+//   }
+  
+  export default function Checkout() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
     const [name, setName] = React.useState("");
@@ -173,6 +189,13 @@ const variable = [{
             <Typography component="h1" variant="h4" align="center">
             New flat
             </Typography>
+            {/* <Stepper activeStep={activeStep} className={classes.stepper}>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper> */}
             <React.Fragment>
               {activeStep === steps.length ? (
                 
@@ -186,6 +209,9 @@ const variable = [{
               ) : (
                 <React.Fragment>
                   <React.Fragment>
+      {/* <Typography variant="h6" gutterBottom>
+        Flat information
+      </Typography> */}
       <Grid container spacing={3}>
 
         <Grid item xs={12} >

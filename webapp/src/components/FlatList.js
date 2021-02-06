@@ -71,26 +71,49 @@ export default function FlatList() {
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
   const [flats,SetFlats] = useState([]);
-    useEffect(() => {
-        async function fetchData() {
-            setLoading(true);
-            try {
-                const flatData = await axios.get('http://localhost:8080/flats');
-                SetFlats(flatData.data);
-            } catch (error) {
-                console.error(error);
-                setSnackbar({
-                    open: true,
-                    message: "Błąd ładowania danych",
-                    type: "error"
-                });
-            }
-            setLoading(false);
-        }
+  const [page, SetPage] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+  const [pageSize, setPageSize] = useState(0);
 
-        fetchData();
+  async function fetchData(p) {
+    setLoading(true);
+    try {
+        const flatData = await axios.get('http://localhost:8080/flats/pagedresponse/'+p);
+        setPageCount(flatData.data.pageCount);
+        setPageSize(flatData.data.pageSize);
+        SetFlats(flatData.data.data);
+    } catch (error) {
+        console.error(error);
+        setSnackbar({
+            open: true,
+            message: "Błąd ładowania danych",
+            type: "error"
+        });
+    }
+    setLoading(false);
+}
+
+    useEffect(() => {
+        fetchData(0);
     }, [SetFlats, setLoading, setSnackbar,]);
 
+  const onClickNext = ()=>
+  {
+    if(page<pageCount-1)
+    {
+      fetchData(page+1);
+      SetPage(page+1);
+    }
+  }
+
+  const onClickPrev = () =>
+  {
+    if(page>0)
+    {
+      fetchData(page-1);
+      SetPage(page-1);
+    }
+  }
 
   return (
     <React.Fragment>
@@ -149,7 +172,7 @@ export default function FlatList() {
                       {flat.name}
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe the content.
+                      {flat.information}
                     </Typography>
                   </CardContent>
                   <CardActions>
@@ -174,6 +197,8 @@ export default function FlatList() {
             ))}
           </Grid>
         </Container>
+        <Button onClick={onClickPrev}>Previous</Button>
+        <Button onClick={onClickNext}>Next</Button>
       </main>
       {/* Footer */}
       <footer className={classes.footer}>
