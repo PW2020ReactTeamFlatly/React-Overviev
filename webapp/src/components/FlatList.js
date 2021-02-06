@@ -114,6 +114,7 @@ export default function FlatList() {
       SetPage(page-1);
     }
   }
+
   const deleteFlat = async (flatId) => {
 
         try
@@ -129,19 +130,7 @@ export default function FlatList() {
           });
         }
 
-        setLoading(true);
-        try {
-            const flatData = await axios.get('http://localhost:8080/flats');
-            SetFlats(flatData.data);
-        } catch (error) {
-            console.error(error);
-            setSnackbar({
-                open: true,
-                message: "Błąd ładowania danych",
-                type: "error"
-            });
-        }
-        setLoading(false);
+        fetchData(page);
   }
 
 
