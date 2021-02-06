@@ -69,19 +69,27 @@ public class FlatController {
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
     public ResponseEntity<PagedResponse<Collection<Flat>>> getAllFlats(@RequestParam(required = false) String nameOrCity,
-                                                                       @RequestParam(required = false) Boolean filter,
-                                                                                     @RequestParam(required = false) Boolean booked,
-                                                                                     @RequestParam(defaultValue = "false") boolean sort,
-                                                                                     @RequestParam(defaultValue = "0") int page,
-                                                                                     @RequestParam(defaultValue = "10") int size){
+                                                                       @RequestParam(required = false,defaultValue = "false") Boolean filter,
+                                                                       @RequestParam(defaultValue = "false") boolean sort,
+                                                                       @RequestParam(defaultValue = "0") int page,
+                                                                       @RequestParam(defaultValue = "10") int size){
         //if(authFilter.IsInvalidToken(token)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 
         Pageable paging = PageRequest.of(page, size, sort? Sort.by("city").ascending() : Sort.by("city").descending());
         Page<Flat> pageResult;
-        if(nameOrCity != null)
-            pageResult = flatRepository.findByNameContainingOrCityContaining(nameOrCity, nameOrCity, paging);
-        else {
-            pageResult = flatRepository.findAll(paging);
+        if (filter == true)
+        {
+            if (nameOrCity != null)
+                pageResult = flatRepository.findByNameContainingOrCityContainingAndReserved(nameOrCity, nameOrCity,false, paging);
+            else
+                pageResult = flatRepository.findByReserved(false,paging);
+        }
+        else
+        {
+            if(nameOrCity != null)
+                pageResult = flatRepository.findByNameContainingOrCityContaining(nameOrCity, nameOrCity, paging);
+            else
+                pageResult = flatRepository.findAll(paging);
         }
         PagedResponse<Collection<Flat>> response = new PagedResponse<>(pageResult.getContent(),page, size, pageResult.getTotalPages());
         return ResponseEntity.ok(response);
