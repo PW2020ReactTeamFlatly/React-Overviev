@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.tomcat.jni.Local;
 import pw.react.backend.utils.JsonDateDeserializer;
 import pw.react.backend.utils.JsonDateSerializer;
 
@@ -37,6 +38,19 @@ public class Flat implements Serializable {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "availableFrom")
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    @JsonSerialize(using = JsonDateSerializer.class)
+    private LocalDateTime availableFrom;
+
+    @Column(name = "availableTo")
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    @JsonSerialize(using = JsonDateSerializer.class)
+    private LocalDateTime availableTo;
+
+    @Column(name = "reserved")
+    private boolean reserved;
 
     @Column(name = "pricePerNight")
     private int pricePerNight;
@@ -69,9 +83,12 @@ public class Flat implements Serializable {
     private Set<Reservation> reservations;
 
     public Flat() {}
-    public Flat(String  Name, int  PricePerNight, String City, String Address, int Sleeps, String Information, int Rating )
+    public Flat(String  Name, LocalDateTime AvailableFrom, LocalDateTime AvailableTo,boolean Reserved, int  PricePerNight, String City, String Address, int Sleeps, String Information, int Rating )
     {
         this.name = Name;
+        this.availableFrom = AvailableFrom;
+        this.availableTo = AvailableTo;
+        this.reserved = Reserved;
         this.pricePerNight = PricePerNight;
         this.city = City;
         this.address = Address;
