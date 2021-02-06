@@ -17,6 +17,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import SnackbarContext from '../contexts/SnackbarContext';
 import LoadingContext from '../contexts/LoadingContext';
 import axios from 'axios';
+import TextField from '@material-ui/core/TextField';
 
 
 function Copyright() {
@@ -73,14 +74,14 @@ export default function FlatList() {
   const [flats,SetFlats] = useState([]);
   const [page, SetPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [pageSize, setPageSize] = useState(0);
+  const [searchText, setSearchText] = useState("");
+  const [sort, setSort] = useState(false);
 
-  async function fetchData(p) {
+  async function fetchData(pg, sort, searchText) {
     setLoading(true);
     try {
-        const flatData = await axios.get('http://localhost:8080/flats/pagedresponse/'+p);
+        const flatData = await axios.get(`http://localhost:8080/flats?page=${pg}&sort=${sort}&nameOrCity=${searchText}`);
         setPageCount(flatData.data.pageCount);
-        setPageSize(flatData.data.pageSize);
         SetFlats(flatData.data.data);
     } catch (error) {
         console.error(error);
@@ -94,14 +95,14 @@ export default function FlatList() {
 }
 
     useEffect(() => {
-        fetchData(0);
-    }, [SetFlats, setLoading, setSnackbar,]);
+        fetchData(0, sort, searchText);
+    }, [SetFlats, setLoading, setSnackbar, setPageCount]);
 
   const onClickNext = ()=>
   {
     if(page<pageCount-1)
     {
-      fetchData(page+1);
+      fetchData(page+1, sort, searchText);
       SetPage(page+1);
     }
   }
@@ -110,13 +111,13 @@ export default function FlatList() {
   {
     if(page>0)
     {
-      fetchData(page-1);
+      fetchData(page-1, sort, "");
       SetPage(page-1);
     }
   }
 
   const deleteFlat = async (flatId) => {
-
+      setLoading(true);
         try
         {
           await axios.delete('http://localhost:8080/flats/' + flatId);
@@ -130,11 +131,20 @@ export default function FlatList() {
           });
         }
 
-        fetchData(page);
+        fetchData(page, sort, searchText);
   }
 
-
+  const onTextChange = (e) => {
+    fetchData(0, sort, e.target.value);
+    setSearchText(e.target.value);
+    SetPage(0);
+  }
   
+  const sortChange = () => {
+    fetchData(page, !sort, searchText);
+    setSort(!sort);
+  }
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -171,6 +181,14 @@ export default function FlatList() {
                     Add Flat
                     </RouterLink>
                   </Button>
+                </Grid>
+                <Grid item>
+                <Button variant="outlined" color="primary" onClick={sortChange}>Sort
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <TextField label="Search" onChange={onTextChange}>
+                  </TextField>
                 </Grid>
               </Grid>
             </div>
