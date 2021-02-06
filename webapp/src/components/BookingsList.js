@@ -56,7 +56,7 @@ const headCells = [
   { id: 'endDate', numeric: false, disablePadding: false, label: 'End date' },
   { id: 'price', numeric: true, disablePadding: false, label: 'Price' },
   { id: 'sleeps', numeric: true, disablePadding: false, label: 'Sleeps' },
-  { id: 'flat_id', numeric: true, disablePadding: false, label: 'Flat' }
+  { id: 'flatId', numeric: true, disablePadding: false, label: 'Flat' }
 ];
 
 function EnhancedTableHead(props) {
@@ -373,7 +373,7 @@ export default function EnhancedTable() {
                       <TableCell align="right">{row.endDate}</TableCell>
                       <TableCell align="right">{row.price}</TableCell>
                       <TableCell align="right">{row.sleeps}</TableCell>
-                      <TableCell align="right">{row.flat_id}</TableCell>
+                      <TableCell align="right">{row.flatId}</TableCell>
                     </TableRow>
                   );
                 })}
