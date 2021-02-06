@@ -4,7 +4,7 @@ import FlatView from './FlatView';
 import FlatList from './FlatList';
 import CreateFlat from './CreateFlat';
 import BookingsList from './BookingsList';
-
+import EditFlat from './EditFlat';
 
 
 
