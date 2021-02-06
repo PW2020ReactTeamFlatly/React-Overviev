@@ -61,7 +61,7 @@ export default function FlatView(props) {
 
   const {flatId} = props;
 
-    const { setLoading } = useContext(LoadingContext);
+  const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
   const [flat,SetFlat] = useState([]);
     useEffect(() => {
@@ -70,6 +70,8 @@ export default function FlatView(props) {
             try {
                 const flatData = await axios.get('http://localhost:8080/flats/'+ flatId);
                 SetFlat(flatData.data);
+
+                console.log(flatData.data);
             } catch (error) {
                 console.error(error);
                 setSnackbar({
@@ -92,7 +94,7 @@ export default function FlatView(props) {
       <AppBar position="absolute" color="default" className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" color="inherit" noWrap>
-              Add flat view
+              Flat details
             </Typography>
 
             
@@ -131,6 +133,12 @@ export default function FlatView(props) {
           <Typography variant="body2" color="textPrimary" component="p">
             Address: {flat.address}
           </Typography>
+          <Typography variant="body2" color="textPrimary" component="p">
+            Available from: {flat.availableFrom ? flat.availableFrom.substring(8,10) + "." + flat.availableFrom.substring(5,7) + "." + flat.availableFrom.substring(0,4) : ""}
+          </Typography>
+          <Typography variant="body2" color="textPrimary" component="p">
+            Available to: {flat.availableTo ? flat.availableTo.substring(8,10) + "." + flat.availableTo.substring(5,7) + "." + flat.availableTo.substring(0,4) : ""}
+          </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
@@ -139,6 +147,9 @@ export default function FlatView(props) {
         </Typography>
         <Typography variant="body2" color="secondary" component="p">
             Rating: {flat.rating}/10
+        </Typography>
+        <Typography variant="body2" color="secondary" component="p">
+            Sleeps: {flat.sleeps}
         </Typography>
       </CardActions>
     </Card>
