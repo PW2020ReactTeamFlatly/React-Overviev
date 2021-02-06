@@ -70,57 +70,37 @@ const useStyles = makeStyles((theme) => ({
   export default function CreateFlat() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
+    const [rating,setRating] = React.useState(2);
     const [name, setName] = React.useState("");
     const [address, setAddress] = React.useState("");
     const [city, setCity] = React.useState("");
     const [price, setPrice] = React.useState("");
-    const [btnDisabled, setBtnDisabled] = useState(true)
+    const [sleeps, setSleeps] = React.useState("");
     const [info, setInfo] = React.useState("");
     const [posted, setPosted] = useState(true);
-    const { setLoading } = useContext(LoadingContext);
+
     const { setSnackbar } = useContext(SnackbarContext);
 
     const handleNameChange = (event) =>{
-        console.log(event.target.value);
         setName(event.target.value);
-        console.log(name);
-        btnEnablingCheck();
     }
 
     const handleAddressChange = (event) =>{
         setAddress(event.target.value);
-        btnEnablingCheck();
     }
     const handleCityChange = (event) =>{
         setCity(event.target.value);
-        btnEnablingCheck();
     }
     const handlePriceChange = (event) =>{
         setPrice(event.target.value);
-        btnEnablingCheck();
     }
 
     const handleInfoChange = (event) =>{
       setInfo(event.target.value);
-      btnEnablingCheck();
   }
-
-    const btnEnablingCheck = () =>
-    {
-    console.log(name.length);
-    console.log(address.length);
-    console.log(city.length);
-    console.log(price.length);
-    console.log(info.length);
-      if(name.length>0 && address.length>0 && city.length>0 && price.length>0 && info.length>0)
-        setBtnDisabled(false);
-    }
-
-    const headers = {
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
-      'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, X-Auth-Token, Origin, Authorization',
-      'security-header': 'secureMe'
-    }
+  const handleSleepsChange = (event) =>{
+    setSleeps(event.target.value);
+}
 
 
 const variable = [{
@@ -129,6 +109,8 @@ const variable = [{
   pricePerNight:price,
   address:address,
   information:info,
+  rating:rating,
+  sleeps:sleeps,
 }];
 
     const handleNext = async () => {
@@ -219,7 +201,7 @@ const variable = [{
             onChange={(event) => handleAddressChange(event)} 
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={12}>
           <TextField
             required
             id="city"
@@ -229,6 +211,17 @@ const variable = [{
             autoComplete="shipping address-level2"
             value={city}
             onChange={(event) => handleCityChange(event)} 
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="sleeps"
+            name="sleeps"
+            label="Sleeps"
+            fullWidth
+            value={sleeps}
+            onChange={(event) => handleSleepsChange(event)} 
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -268,7 +261,6 @@ const variable = [{
                       color="primary"
                       onClick={handleNext}
                       className={classes.button}
-                      disabled={btnDisabled}
                     >
                       {activeStep === steps.length - 1 ? 'Add flat' : 'Next'}
                     </Button>
