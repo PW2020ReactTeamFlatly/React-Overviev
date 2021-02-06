@@ -133,7 +133,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, selected, setSelected, setBookings } = props;
+  const { numSelected, selected, setSelected, setBookings, flatId } = props;
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
 
@@ -160,7 +160,7 @@ const EnhancedTableToolbar = (props) => {
       .then(()=>{
         async function fetchData() {
           try {
-              const flatData = await axios.get('http://localhost:8080/reservations');
+              const flatData = await axios.get('http://localhost:8080/flats/res/'+flatId);
               console.log(flatData.data)
               setBookings(flatData.data);
           } catch (error) {
@@ -251,7 +251,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -261,13 +261,15 @@ export default function EnhancedTable() {
   const { setSnackbar } = useContext(SnackbarContext);
   const [bookings, setBookings] = useState([]);
 
+  const {flatId} = props;
 
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            console.log("HERE");
             try {
-                const flatData = await axios.get('http://localhost:8080/reservations/');
+                console.log(flatId);
+                console.log("SIUUHUUU");
+                const flatData = await axios.get(`http://localhost:8080/flats/res/${flatId}`);
                 setBookings(flatData.data);
             } catch (error) {
                 console.error(error);
@@ -329,7 +331,7 @@ export default function EnhancedTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setBookings={setBookings} setSelected={setSelected}/>
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setBookings={setBookings} setSelected={setSelected} flatId={flatId}/>
         <TableContainer>
           <Table
             className={classes.table}

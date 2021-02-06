@@ -4,10 +4,15 @@ import FlatView from './FlatView';
 import FlatList from './FlatList';
 import CreateFlat from './CreateFlat';
 import BookingsList from './BookingsList';
-import EditFlat from './EditFlat';
+import BookingsListId from './BookingsListId';
+import EditFlat from './EditFlat'
 
 
-
+const BookingsListWithId = ({match}) =>{
+    return(
+        <BookingsListId flatId={match.params.id}/>
+    )
+}
 
 const EditFlatWithId = ({match}) => {
     return(
@@ -30,6 +35,7 @@ function Main(){
                 <Route path='/flatlist' component={FlatList}/>
                 <Route path='/addflat' component={CreateFlat}/>
                 <Route path='/bookings' component={BookingsList}/>
+                <Route path='/booking/:id' component={BookingsListWithId}/>
                 <Redirect to='/flatlist' />
             </Switch>
         </BrowserRouter>

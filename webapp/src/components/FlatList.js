@@ -164,7 +164,9 @@ export default function FlatList() {
                       </RouterLink>
                     </Button>
                     <Button size="small" color="primary">
-                      Bookings
+                      <RouterLink  to={"/booking/"+flat.id}>
+                        Bookings
+                      </RouterLink>
                     </Button>
                   </CardActions>
                 </Card>
