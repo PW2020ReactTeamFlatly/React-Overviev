@@ -8,7 +8,9 @@ import pw.react.backend.dao.CompanyRepository;
 import pw.react.backend.dao.FlatRepository;
 import pw.react.backend.model.Company;
 import pw.react.backend.model.Flat;
+import pw.react.backend.model.Reservation;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -28,7 +30,24 @@ class FlatMainService implements FlatService {
     public Flat updateFlat(Long id, Flat updatedFlat) {
         Flat result = Flat.EMPTY;
         if (flatRepository.existsById(id)) {
+            Flat oldFlat = flatRepository.findById(id).orElseGet(() -> Flat.EMPTY);
             updatedFlat.setId(id);
+            // if any of updatedFlat fields wasnt set they remain unchanged
+            if(updatedFlat.getName() == null)
+                updatedFlat.setName(oldFlat.getName());
+            if(updatedFlat.getPricePerNight() == 0)
+                updatedFlat.setPricePerNight(oldFlat.getPricePerNight());
+            if(updatedFlat.getCity() == null)
+                updatedFlat.setCity(oldFlat.getCity());
+            if(updatedFlat.getAddress() == null)
+                updatedFlat.setAddress(oldFlat.getAddress());
+            if(updatedFlat.getSleeps() == 0)
+                updatedFlat.setSleeps(oldFlat.getSleeps());
+            if(updatedFlat.getInformation() == null)
+                updatedFlat.setInformation(oldFlat.getInformation());
+            if(updatedFlat.getRating() == 0)
+                updatedFlat.setRating(oldFlat.getRating());
+            updatedFlat.setReservations(oldFlat.getReservations());
             result = flatRepository.save(updatedFlat);
             logger.info("Flat with id {} updated.", id);
         }
@@ -44,6 +63,11 @@ class FlatMainService implements FlatService {
             result = true;
         }
         return result;
+    }
+
+    @Override
+    public Collection<Reservation> getReservationsByFlatId(Long flatId) {
+        return flatRepository.findById(flatId).get().getReservations();
     }
 
     @Override

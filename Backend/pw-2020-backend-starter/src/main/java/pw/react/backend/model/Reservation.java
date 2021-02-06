@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import pw.react.backend.utils.JsonDateDeserializer;
@@ -13,7 +12,6 @@ import pw.react.backend.utils.JsonDateSerializer;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.*;
 
 @Entity
 @Table(name = "reservation")
@@ -44,8 +42,8 @@ public class Reservation implements Serializable {
     @Column(name = "price")
     private int price;
 
-    @Column(name = "sleeps")
-    private int sleeps;
+    @Column(name = "persons")
+    private int persons;
 
     @Column(name = "idFlat")
     private long idFlat;
@@ -62,13 +60,13 @@ public class Reservation implements Serializable {
     private Flat flat;
 
     public Reservation () {}
-    public Reservation (String CustomerName, LocalDateTime StartDateTime, LocalDateTime EndDateTime, int Price, int Sleeps, long FlatId)
+    public Reservation (String CustomerName, LocalDateTime StartDateTime, LocalDateTime EndDateTime, int Price, int persons, long FlatId)
     {
         this.customerName = CustomerName;
         this.startDateTime = StartDateTime;
         this.endDateTime = EndDateTime;
         this.price = Price;
-        this.sleeps = Sleeps;
+        this.persons = persons;
         this.idFlat = FlatId;
     }
 
@@ -78,7 +76,7 @@ public class Reservation implements Serializable {
                 reservationDTO.StartDateTime,
                 reservationDTO.EndDateTime,
                 reservationDTO.Price,
-                reservationDTO.Sleeps,
+                reservationDTO.Persons,
                 reservationDTO.FlatId
         );
     }
