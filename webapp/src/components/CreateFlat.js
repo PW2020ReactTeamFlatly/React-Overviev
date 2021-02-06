@@ -97,7 +97,9 @@ const useStyles = makeStyles((theme) => ({
     const { setSnackbar } = useContext(SnackbarContext);
 
     const handleNameChange = (event) =>{
+        console.log(event.target.value);
         setName(event.target.value);
+        console.log(name);
         btnEnablingCheck();
     }
 
@@ -121,6 +123,11 @@ const useStyles = makeStyles((theme) => ({
 
     const btnEnablingCheck = () =>
     {
+    console.log(name.length);
+    console.log(address.length);
+    console.log(city.length);
+    console.log(price.length);
+    console.log(info.length);
       if(name.length>0 && address.length>0 && city.length>0 && price.length>0 && info.length>0)
         setBtnDisabled(false);
     }
@@ -261,7 +268,7 @@ const variable = [{
             onChange={(event) => handlePriceChange(event)} 
           />
         </Grid>
-
+        <Grid item xs={12} sm={12}>
         <TextField
           required
           id="informationTextField"
@@ -272,6 +279,7 @@ const variable = [{
           value={info}
           onChange={(event) => handleInfoChange(event)} 
         />
+        </Grid>
       </Grid>
     </React.Fragment>
                   <div className={classes.buttons}>
@@ -288,7 +296,7 @@ const variable = [{
                       className={classes.button}
                       disabled={btnDisabled}
                     >
-                      {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                      {activeStep === steps.length - 1 ? 'Add flat' : 'Next'}
                     </Button>
                     
                   </div>
