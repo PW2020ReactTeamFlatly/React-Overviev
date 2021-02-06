@@ -35,7 +35,7 @@ public class ReservationController {
     }
 
     @PostMapping(path = "")
-    public Collection<Reservation> createReservations(@RequestBody Collection<ReservationDTO> reservationsDTOs) {
+    public ResponseEntity<Collection<Reservation>> createReservations(@RequestBody Collection<ReservationDTO> reservationsDTOs) {
         List<Reservation> reservations = new ArrayList<Reservation>();
         for (ReservationDTO reservationDTO : reservationsDTOs) {
 
@@ -51,29 +51,30 @@ public class ReservationController {
             reservations.add(reservation);
         }
 
-        return reservationRepository.saveAll(reservations);
+        return ResponseEntity.ok(reservationRepository.saveAll(reservations));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/{reservationId}")
-    public Reservation getReservation(@PathVariable Long reservationId) {
-        return reservationRepository.findById(reservationId).orElseGet(() -> Reservation.EMPTY);
+    public ResponseEntity<Reservation> getReservation(@PathVariable Long reservationId) {
+        return ResponseEntity.ok(reservationRepository.findById(reservationId).orElseGet(() -> Reservation.EMPTY));
     }
+
 
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
-    public Collection<Reservation> getAllReservations() {
-        return reservationRepository.findAll();
+    public ResponseEntity<Collection<Reservation>> getAllReservations() {
+        return ResponseEntity.ok(reservationRepository.findAll());
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping(path = "/{reservationId}")
-    public Reservation updateReservation(@PathVariable Long reservationId,
+    public ResponseEntity<Reservation> updateReservation(@PathVariable Long reservationId,
                                   @RequestBody Reservation updatedReservation) {
         Reservation result;
         result = reservationService.updateReservation(reservationId, updatedReservation);
-        return result;
+        return ResponseEntity.ok(result);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")

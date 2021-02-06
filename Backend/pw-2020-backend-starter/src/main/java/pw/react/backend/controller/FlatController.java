@@ -118,7 +118,10 @@ public class FlatController {
             i += 1;
         }
         int pID = pageId.intValue();
-        return ResponseEntity.ok(new PagedResponse<Collection<Flat>>(result, pID, pageSize, pID + 1));
+        Long repoCount = flatRepository.count();
+        int pageCnt = repoCount.intValue();
+        pageCnt = pageCnt / 10 + 1;
+        return ResponseEntity.ok(new PagedResponse<Collection<Flat>>(result, pID, pageSize, pageCnt));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
