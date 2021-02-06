@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   export default function Checkout() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
-    const [rating,setRating] = React.useState(2);
+    const [rating, setRating] = React.useState(2);
     const [name, setName] = React.useState("");
     const [address, setAddress] = React.useState("");
     const [city, setCity] = React.useState("");
@@ -94,6 +94,8 @@ const useStyles = makeStyles((theme) => ({
     const [sleeps, setSleeps] = React.useState("");
     const [info, setInfo] = React.useState("");
     const [posted, setPosted] = useState(true);
+    const [from, setFrom] = useState("");
+    const [to, setTo] = useState("");
 
     const { setSnackbar } = useContext(SnackbarContext);
 
@@ -114,10 +116,21 @@ const useStyles = makeStyles((theme) => ({
     const handleInfoChange = (event) =>{
       setInfo(event.target.value);
   }
+  const handleRatingChange = (event) =>{
+    setRating(event.target.value);
+  }
   const handleSleepsChange = (event) =>{
     setSleeps(event.target.value);
 }
 
+const handleFromChange = (event) => {
+  setFrom(event.target.value);
+}
+
+const handleToChange = (event) => {
+  setTo(event.target.value);
+  console.log(event.target.value);
+}
 
 const variable = [{
   name:name,
@@ -127,15 +140,16 @@ const variable = [{
   information:info,
   rating:rating,
   sleeps:sleeps,
+  from:from+"T00:00:00.000",
+  to:to+"T00:00:00.000",
 }];
 
     const handleNext = async () => {
 
-
       console.log(name);
         try
         {       
-        await axios.post('http://localhost:8080/flats',variable);
+        await axios.post('http://localhost:8080/flats', variable);
         }
         catch(error) {
           setPosted(false);
@@ -227,7 +241,7 @@ const variable = [{
             onChange={(event) => handleAddressChange(event)} 
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             required
             id="city"
@@ -261,6 +275,45 @@ const variable = [{
             onChange={(event) => handlePriceChange(event)} 
           />
         </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField 
+            id="rating" 
+            name="rating" 
+            label="Ratings" 
+            fullWidth 
+            required
+            value={rating}
+            onChange={(event) => handleRatingChange(event)} 
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField
+              id="dateFrom"
+              type="date"
+              label="Available from:"
+              fullWidth
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={from}
+              onChange={(event) => handleFromChange(event)}
+            />
+      </Grid>
+      <Grid item xs={12} sm={6}>
+            <TextField
+              id="dateTo"
+              type="date"
+              label="Available to:"
+              fullWidth
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={to}
+              onChange={(event) => handleToChange(event)}
+            />
+      </Grid>
         <Grid item xs={12} sm={12}>
         <TextField
           required
