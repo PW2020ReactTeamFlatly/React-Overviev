@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   export default function Checkout() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
-    const [rating, setRating] = React.useState(2);
+    const [rating, setRating] = React.useState("");
     const [name, setName] = React.useState("");
     const [address, setAddress] = React.useState("");
     const [city, setCity] = React.useState("");
@@ -140,8 +140,8 @@ const variable = [{
   information:info,
   rating:rating,
   sleeps:sleeps,
-  from:from+"T00:00:00.000",
-  to:to+"T00:00:00.000",
+  availableFrom:from+"T00:00:00.000",
+  availableTo:to+"T00:00:00.000",
 }];
 
     const handleNext = async () => {
