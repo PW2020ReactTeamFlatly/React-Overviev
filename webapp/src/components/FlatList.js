@@ -159,7 +159,9 @@ export default function FlatList() {
                       </RouterLink>
                     </Button>
                     <Button size="small" color="primary">
-                      Edit
+                      <RouterLink  to={"/editflat/"+flat.id}>
+                        Edit
+                      </RouterLink>
                     </Button>
                     <Button size="small" color="primary">
                       Bookings
