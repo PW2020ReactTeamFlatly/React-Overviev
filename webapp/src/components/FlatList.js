@@ -115,6 +115,26 @@ export default function FlatList() {
     }
   }
 
+  const deleteFlat = async (flatId) => {
+
+        try
+        {
+          await axios.delete('http://localhost:8080/flats/' + flatId);
+        }
+        catch(error) {
+          console.error(error);
+          setSnackbar({
+              open: true,
+              message: "Błąd usuwania danych",
+              type: "error"
+          });
+        }
+
+        fetchData(page);
+  }
+
+
+  
   return (
     <React.Fragment>
       <CssBaseline />
@@ -191,6 +211,9 @@ export default function FlatList() {
                         Bookings
                       </RouterLink>
                     </Button>
+                    <Button size="small" color="primary" onClick={()=>deleteFlat(flat.id)}>
+                      Delete
+                    </Button>
                   </CardActions>
                 </Card>
               </Grid>
@@ -202,12 +225,6 @@ export default function FlatList() {
       </main>
       {/* Footer */}
       <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-                Cos tam w footerze
-        </Typography>
         <Copyright />
       </footer>
       {/* End footer */}
