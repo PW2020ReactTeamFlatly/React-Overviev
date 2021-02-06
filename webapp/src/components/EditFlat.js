@@ -1,11 +1,3 @@
-// import React from "react";
-
-// export default function CreateFlat() {
-//     return (
-//         <div> CreateFlat </div>
-//     );
-// }
-
 import React, { useState, useEffect, useContext } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -66,9 +58,10 @@ const useStyles = makeStyles((theme) => ({
   }));
   
   const steps = ['New flat'];
-  
-  export default function CreateFlat() {
+    
+  export default function EditFlat(props) {
     const classes = useStyles();
+    const {flatId} = props;
     const [activeStep, setActiveStep] = React.useState(0);
     const [name, setName] = React.useState("");
     const [address, setAddress] = React.useState("");
@@ -77,8 +70,43 @@ const useStyles = makeStyles((theme) => ({
     const [btnDisabled, setBtnDisabled] = useState(true)
     const [info, setInfo] = React.useState("");
     const [posted, setPosted] = useState(true);
+    const [flat,SetFlat] = useState([]);
     const { setLoading } = useContext(LoadingContext);
     const { setSnackbar } = useContext(SnackbarContext);
+
+    useEffect(() => {
+        async function fetchData() {
+            setLoading(true);
+            try {
+                console.log('http://localhost:8080/flats/'+ flatId);
+                const flatData = await axios.get('http://localhost:8080/flats/'+ flatId);
+                
+                SetFlat(flatData.data);
+                if(flat.name!=null)
+                    setName(flat.name);
+                if(flat.address!=null)
+                    setAddress(flat.address);
+                if(flat.city!=null)
+                    setCity(flat.city);
+                if(flat.pricePerNight!=null)
+                    setPrice(flat.pricePerNight);
+                if(flat.information!=null)
+                    setInfo(flat.information);
+                
+            } catch (error) {
+                console.error(error);
+                setSnackbar({
+                    open: true,
+                    message: "Błąd ładowania danych",
+                    type: "error"
+                });
+            }
+            setLoading(false);
+            
+        }
+
+        fetchData();
+    }, [SetFlat, setLoading, setSnackbar,]);
 
     const handleNameChange = (event) =>{
         setName(event.target.value);
@@ -109,20 +137,14 @@ const useStyles = makeStyles((theme) => ({
         setBtnDisabled(false);
     }
 
-    const headers = {
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
-      'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, X-Auth-Token, Origin, Authorization',
-      'security-header': 'secureMe'
-    }
-
-
-const variable = [{
-  name:name,
-  city:city,
-  pricePerNight:price,
-  address:address,
-  information:info,
-}];
+const variable = {
+    id:flatId,
+    name:name,
+    city:city,
+    pricePerNight:price,
+    address:address,
+    information:info,
+};
 
     const handleNext = async () => {
 
@@ -130,14 +152,14 @@ const variable = [{
       console.log(name);
         try
         {       
-        await axios.post('http://localhost:8080/flats',variable);
+        await axios.put('http://localhost:8080/'+flatId,variable);
         }
         catch(error) {
           setPosted(false);
           setSnackbar({
             open: true,
             type: 'error',
-            message: 'Not able to post new flat'
+            message: 'Not able to post changes to flat'
         });
     }
       
@@ -154,7 +176,7 @@ const variable = [{
         <AppBar position="absolute" color="default" className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" color="inherit" noWrap>
-              Add flat view
+              Edit flat view
             </Typography>
 
             
@@ -171,7 +193,7 @@ const variable = [{
         <main className={classes.layout}>
           <Paper className={classes.paper}>
             <Typography component="h1" variant="h4" align="center">
-            New flat
+            Edit flat
             </Typography>
             <React.Fragment>
               {activeStep === steps.length ? (
@@ -185,7 +207,7 @@ const variable = [{
                 </React.Fragment>
               ) : (
                 <React.Fragment>
-                  <React.Fragment>
+                  <React.Fragment>a
       <Grid container spacing={3}>
 
         <Grid item xs={12} >
@@ -262,7 +284,7 @@ const variable = [{
                       className={classes.button}
                       disabled={btnDisabled}
                     >
-                      {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                      {activeStep === steps.length - 1 ? 'Confirm changes' : 'Next'}
                     </Button>
                     
                   </div>

@@ -9,7 +9,11 @@ import BookingsList from './BookingsList';
 
 
 
-
+const EditFlatWithId = ({match}) => {
+    return(
+        <EditFlat flatId={match.params.id}/>
+    );
+}
 
 const FlatListWithId = ({match}) => {
     return(
@@ -21,6 +25,7 @@ function Main(){
     return (
         <BrowserRouter>
             <Switch>
+                <Route path='/editflat/:id' component={EditFlatWithId}/>
                 <Route path='/flatlist/:id' component={FlatListWithId}/>
                 <Route path='/flatlist' component={FlatList}/>
                 <Route path='/addflat' component={CreateFlat}/>
