@@ -169,7 +169,7 @@ export default function FlatList() {
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
                 <Grid item>
-                  <Button   variant="contained" color="primary">
+                  <Button   variant="outlined" color="primary">
                   <RouterLink  to="bookings">
                     Book List
                     </RouterLink>
@@ -183,7 +183,7 @@ export default function FlatList() {
                   </Button>
                 </Grid>
                 <Grid item>
-                <Button variant="outlined" color="primary" onClick={sortChange}>Sort
+                <Button variant="outlined" color="primary" onClick={sortChange}> {sort ? "Disable sorting" : "Enable sorting"}
                   </Button>
                 </Grid>
                 <Grid item>
