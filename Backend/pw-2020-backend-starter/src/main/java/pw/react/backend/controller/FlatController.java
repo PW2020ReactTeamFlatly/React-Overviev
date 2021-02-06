@@ -4,22 +4,28 @@ package pw.react.backend.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pw.react.backend.appException.UnauthorizedException;
 import pw.react.backend.dao.CompanyRepository;
+import pw.react.backend.dao.FlatPhotoRepository;
 import pw.react.backend.dao.FlatRepository;
-import pw.react.backend.model.Company;
-import pw.react.backend.model.Flat;
-import pw.react.backend.model.Reservation;
+import pw.react.backend.model.*;
 import pw.react.backend.service.CompanyService;
+import pw.react.backend.service.FlatPhotoService;
 import pw.react.backend.service.FlatService;
 import pw.react.backend.service.SecurityProvider;
 import pw.react.backend.utils.PagedResponse;
 import org.springframework.data.domain.Page;
+import pw.react.backend.web.UploadFileResponse;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,11 +40,18 @@ public class FlatController {
     private final Logger logger = LoggerFactory.getLogger(CompanyController.class);
     private final FlatRepository flatRepository;
     private final FlatService flatService;
+    private FlatPhotoService flatPhotoService;
+    private FlatPhotoRepository flatPhotoRepository;
 
     @Autowired
-    public FlatController(FlatRepository flatRepository, FlatService flatService) {
+    public FlatController(FlatRepository flatRepository,
+                          FlatService flatService,
+                          FlatPhotoRepository flatPhotoRepository,
+                          FlatPhotoService flatPhotoService) {
         this.flatRepository = flatRepository;
         this.flatService = flatService;
+        this.flatPhotoRepository = flatPhotoRepository;
+        this.flatPhotoService = flatPhotoService;
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
@@ -60,11 +73,6 @@ public class FlatController {
         return ResponseEntity.ok(flatService.getReservationsByFlatId(flatId));
     }
 
-    /*@CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping(path = "")
-    public ResponseEntity<Collection<Flat>> getAllFlats(){
-        return ResponseEntity.ok(flatRepository.findAll());
-    }*/
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
@@ -82,7 +90,7 @@ public class FlatController {
             if (nameOrCity != null)
                 pageResult = flatRepository.findByNameContainingOrCityContainingAndReserved(nameOrCity, nameOrCity,false, paging);
             else
-                pageResult = flatRepository.findByReserved(false,paging);
+                pageResult = flatRepository.findByReserved(false, paging);
         }
         else
         {
@@ -173,4 +181,46 @@ public class FlatController {
             }
             return ResponseEntity.ok(String.format("Flat with id %s deleted.", flatId));
     }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping(path = "/{flatId}/photo")
+    public ResponseEntity<UploadFileResponse> uploadFlatPhoto(@PathVariable Long flatId,
+                                                     @RequestParam("file") MultipartFile file) {
+        // TODO: security check
+        FlatPhoto flatPhoto = flatPhotoService.storeFlatPhoto(flatId,file);
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/flats/" + flatId + "/photo/")
+                .path(flatPhoto.getFileName())
+                .toUriString();
+        return ResponseEntity.ok(new UploadFileResponse(
+                flatPhoto.getFileName(), fileDownloadUri, file.getContentType(), file.getSize()
+        ));
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(value = "/{flatId}/photo", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public @ResponseBody byte[] getPhoto(@PathVariable Long flatId) {
+        FlatPhoto flatPhoto = flatPhotoService.getFlatPhoto(flatId);
+        return flatPhoto.getData();
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(value = "/{flatId}/photo2")
+    public ResponseEntity<Resource> getPhoto2(@RequestHeader HttpHeaders headers, @PathVariable Long flatId) {
+        FlatPhoto flatPhoto = flatPhotoService.getFlatPhoto(flatId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(flatPhoto.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + flatPhoto.getFileName() + "\"")
+                .body(new ByteArrayResource(flatPhoto.getData()));
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @DeleteMapping(value = "/{flatId}/photo")
+    public ResponseEntity<String> removePhoto(@PathVariable String flatId) {
+        flatPhotoService.deleteFlatPhoto(Long.parseLong(flatId));
+        return ResponseEntity.ok().body(String.format("Photo for the flat with id %s removed.", flatId));
+    }
+
+
 }

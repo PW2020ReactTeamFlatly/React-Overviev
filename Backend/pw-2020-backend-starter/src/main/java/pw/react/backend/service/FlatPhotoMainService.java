@@ -28,7 +28,7 @@ class FlatPhotoMainService implements FlatPhotoService {
     }
 
     @Override
-    public FlatPhoto storeLogo(long flatId, MultipartFile file) {
+    public FlatPhoto storeFlatPhoto(long flatId, MultipartFile file) {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
@@ -48,8 +48,7 @@ class FlatPhotoMainService implements FlatPhotoService {
 
     @Override
     public FlatPhoto getFlatPhoto(long flatId) {
-        return repository.findByFlatId(flatId)
-                .orElseThrow(() -> new ResourceNotFoundException("File not found with flatId " + flatId));
+        return repository.findByFlatId(flatId).orElseThrow(() -> new ResourceNotFoundException("File not found with flatId " + flatId));
     }
 
     @Override
