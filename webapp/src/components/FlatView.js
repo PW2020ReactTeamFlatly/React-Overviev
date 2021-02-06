@@ -117,7 +117,7 @@ export default function FlatView(props) {
           component="img"
           alt="Contemplative Reptile"
           height="140"
-          image="https://bi.im-g.pl/im/85/f0/17/z25104261AMP,Mieszkanie--rynek-wtorny---zdjecie-pogladowe.jpg"
+          image= {"http://localhost:8080/flats/" + flat.id + "/photo2"}
           title=""
         />
         <CardContent>

@@ -202,7 +202,7 @@ export default function FlatList() {
                 <Card className={classes.card}>
                   <CardMedia
                     className={classes.cardMedia}
-                    image="https://bi.im-g.pl/im/85/f0/17/z25104261AMP,Mieszkanie--rynek-wtorny---zdjecie-pogladowe.jpg"
+                    image={"http://localhost:8080/flats/" + flat.id + "/photo2"}
                     title="Image title"
                   />
                   <CardContent className={classes.cardContent}>
