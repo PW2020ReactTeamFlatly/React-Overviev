@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pw.react.backend.appException.UnauthorizedException;
-import pw.react.backend.dao.CompanyRepository;
 import pw.react.backend.dao.ReservationRepository;
 import pw.react.backend.model.Flat;
 import pw.react.backend.model.Reservation;

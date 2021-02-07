@@ -8,9 +8,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pw.react.backend.appException.InvalidFileException;
 import pw.react.backend.appException.ResourceNotFoundException;
-import pw.react.backend.dao.CompanyLogoRepository;
 import pw.react.backend.dao.FlatPhotoRepository;
-import pw.react.backend.model.Flat;
 import pw.react.backend.model.FlatPhoto;
 
 import java.io.IOException;
