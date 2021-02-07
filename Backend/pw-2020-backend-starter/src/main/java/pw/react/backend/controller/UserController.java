@@ -3,24 +3,14 @@ package pw.react.backend.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pw.react.backend.appException.UnauthorizedException;
-import pw.react.backend.dao.CompanyRepository;
 import pw.react.backend.dao.UserRepository;
 import pw.react.backend.model.*;
 import pw.react.backend.service.*;
 import pw.react.backend.utils.LoginRequest;
-import pw.react.backend.web.UploadFileResponse;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
@@ -46,9 +36,9 @@ public class UserController {
         // ONLY FOR PRESENTATION PURPOSES
         if(userRepository.count() < 2)
         {
-            User admin_user = new User("admin", "admin", "secureMe", "admin user", "admin user");
+            User admin_user = new User("admin", "admin", securityService.generateNewUUID(), "admin user", "admin user");
             userRepository.save(admin_user);
-            User bookly_user = new User("bookly", "bookly", "secureMe", "bookly user", "bookly user");
+            User bookly_user = new User("bookly", "bookly", securityService.generateNewUUID(), "bookly user", "bookly user");
             userRepository.save(bookly_user);
         }
         //////////////////////////
