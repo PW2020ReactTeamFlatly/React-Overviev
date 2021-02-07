@@ -192,10 +192,10 @@ public class FlatController {
                 .path("/flats/" + flatId + "/photo/")
                 .path(flatPhoto.getFileName())
                 .toUriString();
-        return null;
-                //ResponseEntity.ok(new UploadFileResponse(
-                //flatPhoto.getFileName(), fileDownloadUri, file.getContentType(), file.getSize()\
-        // ));
+
+        return ResponseEntity.ok(new UploadFileResponse(
+                flatPhoto.getFileName(), fileDownloadUri, file.getContentType(), file.getSize()
+        ));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
