@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Service
 class UserMainService implements UserService {
-    private final Logger logger = LoggerFactory.getLogger(CompanyMainService.class);
+    private final Logger logger = LoggerFactory.getLogger(FlatMainService.class);
 
     private UserRepository userRepository;
 

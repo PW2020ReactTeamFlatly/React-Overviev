@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pw.react.backend.appException.UnauthorizedException;
-import pw.react.backend.dao.CompanyRepository;
 import pw.react.backend.dao.FlatPhotoRepository;
 import pw.react.backend.dao.FlatRepository;
 import pw.react.backend.model.*;
-import pw.react.backend.service.CompanyService;
 import pw.react.backend.service.FlatPhotoService;
 import pw.react.backend.service.FlatService;
 import pw.react.backend.service.SecurityProvider;
@@ -27,10 +25,9 @@ import pw.react.backend.utils.PagedResponse;
 import org.springframework.data.domain.Page;
 import pw.react.backend.web.UploadFileResponse;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
@@ -74,7 +71,15 @@ public class FlatController {
         {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access to resources.");
         }
-
+        Date currentDate = new Date();
+        LocalDateTime currentLocalDate = LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+        for(Flat flat : flats)
+        {
+            if(currentLocalDate.compareTo(flat.getAvailableFrom()) > 0 && currentLocalDate.compareTo(flat.getAvailableTo()) < 0)
+                flat.setActive(true);
+            else
+                flat.setActive(false);
+        }
         List<Flat> result = flatRepository.saveAll(flats);
         return ResponseEntity.ok(result.stream().map(c -> String.valueOf(c.getId())).collect(joining(",")));
     }
@@ -108,7 +113,7 @@ public class FlatController {
     @GetMapping(path = "")
     public ResponseEntity<PagedResponse<Collection<Flat>>> getAllFlats(@RequestHeader HttpHeaders headers,
                                                                        @RequestParam(required = false) String nameOrCity,
-                                                                       @RequestParam(required = false,defaultValue = "false") Boolean filter,
+                                                                       @RequestParam(required = false,defaultValue = "inactive") String filter,
                                                                        @RequestParam(defaultValue = "false") boolean sort,
                                                                        @RequestParam(defaultValue = "0") int page,
                                                                        @RequestParam(defaultValue = "10") int size){
@@ -120,12 +125,12 @@ public class FlatController {
 
         Pageable paging = PageRequest.of(page, size, sort? Sort.by("city").ascending() : Sort.by("city").descending());
         Page<Flat> pageResult;
-        if (filter == true)
+        if (filter == "active")
         {
             if (nameOrCity != null)
-                pageResult = flatRepository.findByNameContainingOrCityContainingAndReserved(nameOrCity, nameOrCity,false, paging);
+                pageResult = flatRepository.findByNameContainingOrCityContainingAndActive(nameOrCity, nameOrCity,true, paging);
             else
-                pageResult = flatRepository.findByReserved(false, paging);
+                pageResult = flatRepository.findByActive(true, paging);
         }
         else
         {
@@ -136,78 +141,6 @@ public class FlatController {
         }
         PagedResponse<Collection<Flat>> response = new PagedResponse<>(pageResult.getContent(),page, size, pageResult.getTotalPages());
         return ResponseEntity.ok(response);
-    }
-
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping(path = "/page/{pageId}")
-    public ResponseEntity<Collection<Flat>> getPage(@RequestHeader HttpHeaders headers, @PathVariable Long pageId){
-        logHeaders(headers);
-        if (!securityService.isAuthorized(headers))
-        {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-
-        Collection<Flat> flats = flatRepository.findAll();
-        ArrayList<Flat> result = new ArrayList<Flat>();
-
-        Iterator<Flat> it = flats.iterator();
-        long index = 10 * pageId;
-        long i = 0;
-        while(it.hasNext())
-        {
-            if(i == index)
-            {
-                for(int j = 0; j < 10; j++)
-                {
-                    result.add(it.next());
-                    if(!it.hasNext())
-                        break;;
-                }
-                break;
-            }
-            it.next();
-            i += 1;
-        }
-        return ResponseEntity.ok(result);
-    }
-
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping(path = "/pagedresponse/{pageId}")
-    public ResponseEntity<PagedResponse<Collection<Flat>>> getPagedResponse(@RequestHeader HttpHeaders headers, @PathVariable Long pageId){
-        logHeaders(headers);
-        if (!securityService.isAuthorized(headers))
-        {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-
-        Collection<Flat> flats = flatRepository.findAll();
-        ArrayList<Flat> result = new ArrayList<Flat>();
-
-        Iterator<Flat> it = flats.iterator();
-        long index = 10 * pageId;
-        long i = 0;
-        int pageSize = 0;
-        while(it.hasNext())
-        {
-            if(i == index)
-            {
-                for(int j = 0; j < 10; j++)
-                {
-                    result.add(it.next());
-                    pageSize+=1;
-                    if(!it.hasNext())
-                        break;;
-                }
-                break;
-            }
-            it.next();
-            i += 1;
-        }
-        int pID = pageId.intValue();
-        Long repoCount = flatRepository.count();
-        int pageCnt = repoCount.intValue();
-        pageCnt = pageCnt / 10 + 1;
-        return ResponseEntity.ok(new PagedResponse<Collection<Flat>>(result, pID, pageSize, pageCnt));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
@@ -244,35 +177,34 @@ public class FlatController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(path = "/{flatId}/photo")
-    public ResponseEntity<UploadFileResponse> uploadFlatPhoto(@RequestHeader HttpHeaders headers, @PathVariable Long flatId,
-                                                     @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<UploadFileResponse> uploadFlatPhoto(@RequestHeader HttpHeaders headers,
+                                                              @PathVariable Long flatId,
+                                                              @RequestParam("file") MultipartFile file) {
         logHeaders(headers);
         if (!securityService.isAuthorized(headers))
         {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        // TODO: MACIEK TO NIE DZIALA :_:
         FlatPhoto flatPhoto = flatPhotoService.storeFlatPhoto(flatId,file);
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/flats/" + flatId + "/photo/")
                 .path(flatPhoto.getFileName())
                 .toUriString();
-        return null;
-                //ResponseEntity.ok(new UploadFileResponse(
-                //flatPhoto.getFileName(), fileDownloadUri, file.getContentType(), file.getSize()\
-        // ));
+
+        return ResponseEntity.ok(new UploadFileResponse(
+                flatPhoto.getFileName(), fileDownloadUri, file.getContentType(), file.getSize()
+        ));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value = "/{flatId}/photo", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public @ResponseBody byte[] getPhoto(@RequestHeader HttpHeaders headers, @PathVariable Long flatId) {
         logHeaders(headers);
-        throw new UnauthorizedException("Request is unauthorized");
-
-
-        //FlatPhoto flatPhoto = flatPhotoService.getFlatPhoto(flatId);
-        //return flatPhoto.getData();
+        if (!securityService.isAuthorized(headers))
+            throw new UnauthorizedException("Request is unauthorized");
+        FlatPhoto flatPhoto = flatPhotoService.getFlatPhoto(flatId);
+        return flatPhoto.getData();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
@@ -306,4 +238,48 @@ public class FlatController {
     }
 
 
+    ///// MOBILE NON AUTHORIZABLE ENDPOINTS
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "/mobile")
+    public ResponseEntity<PagedResponse<Collection<Flat>>> mobileGetAllFlats(@RequestParam(required = false) String nameOrCity,
+                                                                             @RequestParam(required = false,defaultValue = "inactive") String filter,
+                                                                             @RequestParam(defaultValue = "false") boolean sort,
+                                                                             @RequestParam(defaultValue = "0") int page,
+                                                                             @RequestParam(defaultValue = "10") int size){
+
+        Pageable paging = PageRequest.of(page, size, sort? Sort.by("city").ascending() : Sort.by("city").descending());
+        Page<Flat> pageResult;
+        if (filter == "active")
+        {
+            if (nameOrCity != null)
+                pageResult = flatRepository.findByNameContainingOrCityContainingAndActive(nameOrCity, nameOrCity,true, paging);
+            else
+                pageResult = flatRepository.findByActive(true, paging);
+        }
+        else
+        {
+            if(nameOrCity != null)
+                pageResult = flatRepository.findByNameContainingOrCityContaining(nameOrCity, nameOrCity, paging);
+            else
+                pageResult = flatRepository.findAll(paging);
+        }
+        PagedResponse<Collection<Flat>> response = new PagedResponse<>(pageResult.getContent(),page, size, pageResult.getTotalPages());
+        return ResponseEntity.ok(response);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "/mobile/res/{flatId}")
+    public ResponseEntity<Collection<Reservation>> mobileGetReservationsByFlatId(@PathVariable Long flatId){
+        return ResponseEntity.ok(flatService.getReservationsByFlatId(flatId));
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(value = "/mobile/{flatId}/photo")
+    public ResponseEntity<Resource> mobileGetPhoto(@PathVariable Long flatId) {
+        FlatPhoto flatPhoto = flatPhotoService.getFlatPhoto(flatId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(flatPhoto.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + flatPhoto.getFileName() + "\"")
+                .body(new ByteArrayResource(flatPhoto.getData()));
+    }
 }

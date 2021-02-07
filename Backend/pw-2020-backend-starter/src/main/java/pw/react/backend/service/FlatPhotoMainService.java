@@ -18,7 +18,7 @@ import java.io.IOException;
 @Service
 class FlatPhotoMainService implements FlatPhotoService {
 
-    private final Logger logger = LoggerFactory.getLogger(CompanyLogoService.class);
+    private final Logger logger = LoggerFactory.getLogger(FlatPhotoService.class);
 
     private final FlatPhotoRepository repository;
 

@@ -32,7 +32,7 @@ class FlatMainService implements FlatService {
         if (flatRepository.existsById(id)) {
             Flat oldFlat = flatRepository.findById(id).orElseGet(() -> Flat.EMPTY);
             updatedFlat.setId(id);
-            // if any of updatedFlat fields wasnt set they remain unchanged (care: reserved)
+            // if any of updatedFlat fields wasnt set they remain unchanged
             if(updatedFlat.getName() == null)
                 updatedFlat.setName(oldFlat.getName());
             if(updatedFlat.getAvailableFrom() == null)
