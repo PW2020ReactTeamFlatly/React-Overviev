@@ -76,6 +76,7 @@ export default function EditFlat(props) {
   const { setSnackbar } = useContext(SnackbarContext);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [file, SetFile] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -83,7 +84,8 @@ export default function EditFlat(props) {
       try {
         console.log('http://localhost:8080/flats/' + flatId);
         const flatData = await axios.get('http://localhost:8080/flats/' + flatId);
-
+        const fl = await axios.get('http://localhost:8080/flats/' + flatId + '/photo2');
+        console.log(fl);
         SetFlat(flatData.data);
         if (flatData.data.name != null)
           setName(flatData.data.name);
@@ -103,6 +105,11 @@ export default function EditFlat(props) {
           setFrom(flatData.data.availableFrom.substring(0, 10));
          if (flatData.data.availableTo != null)
           setTo(flatData.data.availableTo.substring(0, 10));
+          if (fl.data != null)
+          {
+            SetFile(fl.data);
+            console.log(fl.data);
+          }
 
 
       } catch (error) {
@@ -153,6 +160,10 @@ const handleToChange = (event) => {
   console.log(event.target.value);
 }
 
+const handleFileChange = (event) => {
+  SetFile(event.target.files[0]);
+  console.log(event.target.value);
+}
   const variable = {
     id: flatId,
     name: name,
@@ -171,6 +182,9 @@ const handleToChange = (event) => {
     console.log(variable);
     try {
       await axios.put('http://localhost:8080/flats/' + flatId, variable);
+      const dataForm = new FormData();
+      dataForm.append('file', file);
+      await axios.post("http://localhost:8080/flats/"+flatId+"/photo", dataForm);
     }
     catch (error) {
       setPosted(false);
@@ -336,6 +350,19 @@ const handleToChange = (event) => {
                         value={info}
                         onChange={(event) => handleInfoChange(event)}
                       />
+                      </Grid>
+                      <Grid item xs={12} sm={12}>
+                      <Button
+          variant="contained"
+          component="label"
+          onChange={handleFileChange}
+        >
+          Change File
+          <input
+            type="file"
+            hidden
+          />
+        </Button>
                       </Grid>
                     </Grid>
                   </React.Fragment>

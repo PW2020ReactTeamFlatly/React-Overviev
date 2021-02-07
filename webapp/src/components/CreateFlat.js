@@ -96,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
     const [posted, setPosted] = useState(true);
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
+    const [file, SetFile] = useState(null);
 
     const { setSnackbar } = useContext(SnackbarContext);
 
@@ -129,7 +130,10 @@ const handleFromChange = (event) => {
 
 const handleToChange = (event) => {
   setTo(event.target.value);
-  console.log(event.target.value);
+}
+
+const handleFileChange = (event) => {
+  SetFile(event.target.files[0]);
 }
 
 const variable = [{
@@ -144,12 +148,16 @@ const variable = [{
   availableTo:to+"T00:00:00.000",
 }];
 
+
     const handleNext = async () => {
 
       console.log(name);
         try
-        {       
-        await axios.post('http://localhost:8080/flats', variable);
+        {
+          const dt = await axios.post('http://localhost:8080/flats', variable);
+          const dataForm = new FormData();
+          dataForm.append('file', file);
+          await axios.post("http://localhost:8080/flats/"+dt.data+"/photo", dataForm);
         }
         catch(error) {
           setPosted(false);
@@ -157,7 +165,7 @@ const variable = [{
             open: true,
             type: 'error',
             message: 'Not able to post new flat'
-        });
+        });        
     }
       
       setActiveStep(activeStep + 1);
@@ -325,6 +333,19 @@ const variable = [{
           value={info}
           onChange={(event) => handleInfoChange(event)} 
         />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+        <Button
+          variant="contained"
+          component="label"
+          onChange={handleFileChange}
+        >
+          Upload File
+          <input
+            type="file"
+            hidden
+          />
+        </Button>
         </Grid>
       </Grid>
     </React.Fragment>
