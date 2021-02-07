@@ -59,12 +59,12 @@ const theme = createMuiTheme({
 export default function FlatView(props) {
   const classes = useStyles();
 
-
   const {flatId} = props;
   const { token, setToken} = useContext(LoginContext);
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
   const [flat,SetFlat] = useState([]);
+  const [photo, SetPhoto] = useState(undefined);
 
     useEffect(() => {
         async function fetchData() {
@@ -81,6 +81,17 @@ export default function FlatView(props) {
             {
               const response = await axios(config);
               SetFlat(response.data);
+
+              var config2 = {
+                method: 'get',
+                url: 'http://localhost:8080/flats/'+flatId+'/photo2',
+                headers: { 
+                  'security-header': token
+                },
+                responseType: 'blob'
+              };
+              const blob = await axios(config2)            
+              SetPhoto(URL.createObjectURL(blob.data));
             }
             catch(error)
             {
@@ -95,7 +106,7 @@ export default function FlatView(props) {
         }
 
         fetchData();
-    }, [SetFlat, setLoading, setSnackbar,]);
+    }, [SetFlat, setLoading, setSnackbar, SetPhoto]);
 
   return (
     
@@ -128,7 +139,7 @@ export default function FlatView(props) {
           component="img"
           alt="Contemplative Reptile"
           height="140"
-          image= {"http://localhost:8080/flats/" + flat.id + "/photo2"}
+          image= {photo}
           title=""
         />
         <CardContent>
