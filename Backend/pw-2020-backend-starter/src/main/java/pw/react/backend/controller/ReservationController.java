@@ -43,10 +43,9 @@ public class ReservationController {
             reservation = Reservation.valueOf(reservationDTO);
 
             Flat flat = flatService.findFlatById(reservationDTO.getFlatId());
-            logger.error("BYLECO: " + flat.getName());
-            logger.error("KAWABUNGA: " + flat.getId());
 
-                reservation.setFlat(flat);
+            reservation.setFlat(flat);
+            reservation.setFlatName(flat.getName());
 
             reservations.add(reservation);
         }
@@ -59,8 +58,6 @@ public class ReservationController {
     public ResponseEntity<Reservation> getReservation(@PathVariable Long reservationId) {
         return ResponseEntity.ok(reservationRepository.findById(reservationId).orElseGet(() -> Reservation.EMPTY));
     }
-
-
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")

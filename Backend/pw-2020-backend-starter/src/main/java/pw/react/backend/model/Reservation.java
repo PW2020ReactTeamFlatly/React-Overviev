@@ -48,6 +48,9 @@ public class Reservation implements Serializable {
     @Column(name = "idFlat")
     private long idFlat;
 
+    @Column(name = "flatName")
+    private String flatName;
+
     //@OneToOne(mappedBy = "reservation")
     //private Flat flat;
     //@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -60,7 +63,7 @@ public class Reservation implements Serializable {
     private Flat flat;
 
     public Reservation () {}
-    public Reservation (String CustomerName, LocalDateTime StartDateTime, LocalDateTime EndDateTime, int Price, int persons, long FlatId)
+    public Reservation (String CustomerName, LocalDateTime StartDateTime, LocalDateTime EndDateTime, int Price, int persons, long FlatId, String FlatName)
     {
         this.customerName = CustomerName;
         this.startDateTime = StartDateTime;
@@ -68,6 +71,7 @@ public class Reservation implements Serializable {
         this.price = Price;
         this.persons = persons;
         this.idFlat = FlatId;
+        this.flatName = FlatName;
     }
 
     public static Reservation valueOf(ReservationDTO reservationDTO)
@@ -77,7 +81,8 @@ public class Reservation implements Serializable {
                 reservationDTO.EndDateTime,
                 reservationDTO.Price,
                 reservationDTO.Persons,
-                reservationDTO.FlatId
+                reservationDTO.FlatId,
+                "EMPTY"
         );
     }
 
