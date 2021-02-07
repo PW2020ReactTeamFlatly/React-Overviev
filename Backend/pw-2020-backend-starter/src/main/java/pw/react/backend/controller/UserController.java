@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping(path = "")
+    @PostMapping(path = "")
     public ResponseEntity<String>  getKey(@RequestBody  Collection<LoginRequest> requests){
 
         // ONLY FOR PRESENTATION PURPOSES
