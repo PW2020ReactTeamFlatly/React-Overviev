@@ -15,8 +15,11 @@ import pw.react.backend.model.Reservation;
 import pw.react.backend.model.ReservationDTO;
 import pw.react.backend.service.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -57,12 +60,19 @@ public class ReservationController {
         }
 
         List<Reservation> reservations = new ArrayList<Reservation>();
+
+        Date currentDate = new Date();
+        LocalDateTime currentLocalDate = LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+
         for (ReservationDTO reservationDTO : reservationsDTOs) {
 
             Reservation reservation = Reservation.valueOf(reservationDTO);
             reservation = Reservation.valueOf(reservationDTO);
 
             Flat flat = flatService.findFlatById(reservationDTO.getFlatId());
+
+            if(currentLocalDate.compareTo(reservation.getStartDateTime()) > 0 && currentLocalDate.compareTo(reservation.getEndDateTime()) < 0)
+                flat.setActive(false);
 
             reservation.setFlat(flat);
             reservation.setFlatName(flat.getName());
@@ -120,11 +130,19 @@ public class ReservationController {
         {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Request is unauthorized");
         }
-
+        Reservation reservation = reservationRepository.findById(reservationId).orElseGet(() -> Reservation.EMPTY);
         boolean deleted = reservationService.deleteReservation(reservationId);
         if (!deleted) {
             return ResponseEntity.badRequest().body(String.format("Reservation with id %s does not exists.", reservationId));
         }
+
+        Flat flat = flatService.findFlatById(reservation.getIdFlat());
+        Date currentDate = new Date();
+        LocalDateTime currentLocalDate = LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+        if(currentLocalDate.compareTo(reservation.getStartDateTime()) > 0 && currentLocalDate.compareTo(reservation.getEndDateTime()) < 0)
+            flat.setActive(true);
+
+
         return ResponseEntity.ok(String.format("Reservation with id %s deleted.", reservationId));
     }
 }

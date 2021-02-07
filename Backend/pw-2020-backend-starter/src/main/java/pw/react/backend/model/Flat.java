@@ -49,8 +49,8 @@ public class Flat implements Serializable {
     @JsonSerialize(using = JsonDateSerializer.class)
     private LocalDateTime availableTo;
 
-    @Column(name = "reserved")
-    private boolean reserved;
+    @Column(name = "active")
+    private boolean active;
 
     @Column(name = "pricePerNight")
     private int pricePerNight;
@@ -70,25 +70,18 @@ public class Flat implements Serializable {
     @Column(name = "rating")
     private int rating;
 
-    //@OneToOne(cascade = CascadeType.ALL)
-    //private Reservation reservation;
-
-    //@OneToMany(fetch = FetchType.EAGER)
-    //@OneToMany(mappedBy = "flat")
-    //private List<Reservation> reservations;
-
     @JsonManagedReference
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="FLAT_ID")
     private Set<Reservation> reservations;
 
     public Flat() {}
-    public Flat(String  Name, LocalDateTime AvailableFrom, LocalDateTime AvailableTo,boolean Reserved, int  PricePerNight, String City, String Address, int Sleeps, String Information, int Rating )
+    public Flat(String  Name, LocalDateTime AvailableFrom, LocalDateTime AvailableTo,boolean Active, int  PricePerNight, String City, String Address, int Sleeps, String Information, int Rating )
     {
         this.name = Name;
         this.availableFrom = AvailableFrom;
         this.availableTo = AvailableTo;
-        this.reserved = Reserved;
+        this.active = Active;
         this.pricePerNight = PricePerNight;
         this.city = City;
         this.address = Address;
