@@ -42,11 +42,14 @@ public class UserController {
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
     public ResponseEntity<String>  getKey(@RequestBody  Collection<LoginRequest> requests){
+
         // ONLY FOR PRESENTATION PURPOSES
-        if(userRepository.count() < 1)
+        if(userRepository.count() < 2)
         {
-            User admin_user = new User("admin", "admin", "secureMe");
+            User admin_user = new User("admin", "admin", "secureMe", "admin user", "admin user");
             userRepository.save(admin_user);
+            User bookly_user = new User("bookly", "bookly", "secureMe", "bookly user", "bookly user");
+            userRepository.save(bookly_user);
         }
         //////////////////////////
 
@@ -73,8 +76,6 @@ public class UserController {
                 }
             }
         }
-
-
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bad login or password");
     }
