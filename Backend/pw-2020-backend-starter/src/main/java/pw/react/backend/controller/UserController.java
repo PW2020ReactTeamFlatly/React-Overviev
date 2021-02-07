@@ -46,9 +46,9 @@ public class UserController {
         // ONLY FOR PRESENTATION PURPOSES
         if(userRepository.count() < 2)
         {
-            User admin_user = new User("admin", "admin", "secureMe");
+            User admin_user = new User("admin", "admin", "secureMe", "admin user", "admin user");
             userRepository.save(admin_user);
-            User bookly_user = new User("bookly", "bookly", "secureMe");
+            User bookly_user = new User("bookly", "bookly", "secureMe", "bookly user", "bookly user");
             userRepository.save(bookly_user);
         }
         //////////////////////////
