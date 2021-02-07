@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pw.react.backend.appException.UnauthorizedException;
 import pw.react.backend.dao.CompanyRepository;
 import pw.react.backend.dao.ReservationRepository;
 import pw.react.backend.model.Flat;
@@ -17,6 +18,7 @@ import pw.react.backend.service.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -63,6 +65,31 @@ public class ReservationController {
             reservation = Reservation.valueOf(reservationDTO);
 
             Flat flat = flatService.findFlatById(reservationDTO.getFlatId());
+            if(flat == null)
+            {
+                throw new UnauthorizedException("Flat with id:" + reservationDTO.getFlatId() + " does not exist.");
+            }
+
+            Iterator<Reservation> iterator = flat.getReservations().iterator();
+            while (iterator.hasNext()) {
+                Reservation res = iterator.next();
+                if(res.getStartDateTime().compareTo(reservationDTO.getStartDateTime()) >= 0)
+                {
+                    if(res.getStartDateTime().compareTo(reservationDTO.getEndDateTime()) <= 0)
+                    {
+                        throw new UnauthorizedException("There is already a reservation in this time period");
+                    }
+                }
+
+                if(res.getStartDateTime().compareTo(reservationDTO.getStartDateTime()) <= 0)
+                {
+                    if(res.getStartDateTime().compareTo(reservationDTO.getEndDateTime()) >= 0)
+                    {
+                        throw new UnauthorizedException("There is already a reservation in this time period");
+                    }
+                }
+
+            }
 
             reservation.setFlat(flat);
             reservation.setFlatName(flat.getName());
