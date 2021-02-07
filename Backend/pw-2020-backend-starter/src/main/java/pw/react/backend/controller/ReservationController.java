@@ -172,4 +172,23 @@ public class ReservationController {
 
         return ResponseEntity.ok(String.format("Reservation with id %s deleted.", reservationId));
     }
+
+    ///////// MOBILE NON AUTHORIZABLE ENDPOINTS
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @DeleteMapping(path = "/mobile/{reservationId}")
+    public ResponseEntity<String> mobileDeleteReservation(@PathVariable Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId).orElseGet(() -> Reservation.EMPTY);
+        boolean deleted = reservationService.deleteReservation(reservationId);
+        if (!deleted) {
+            return ResponseEntity.badRequest().body(String.format("Reservation with id %s does not exists.", reservationId));
+        }
+        Flat flat = flatService.findFlatById(reservation.getIdFlat());
+        Date currentDate = new Date();
+        LocalDateTime currentLocalDate = LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+        if(currentLocalDate.compareTo(reservation.getStartDateTime()) > 0 && currentLocalDate.compareTo(reservation.getEndDateTime()) < 0)
+            flat.setActive(true);
+
+        return ResponseEntity.ok(String.format("Reservation with id %s deleted.", reservationId));
+    }
 }
