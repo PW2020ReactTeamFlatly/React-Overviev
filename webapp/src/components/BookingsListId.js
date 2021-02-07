@@ -365,6 +365,7 @@ export default function EnhancedTable(props) {
                       key={row.id}
                       selected={isItemSelected}
                     >
+                      {console.log(row)}
                       <TableCell padding="checkbox">
                         <Checkbox
                           checked={isItemSelected}
@@ -379,7 +380,7 @@ export default function EnhancedTable(props) {
                       
                       <TableCell align="right">{row.price}</TableCell>
                       <TableCell align="right">{row.persons}</TableCell>
-                      <TableCell align="right">{row.idFlat}</TableCell>
+                      <TableCell align="right">{row.flatName}</TableCell>
                     </TableRow>
                   );
                 })}
