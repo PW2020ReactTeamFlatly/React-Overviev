@@ -186,7 +186,7 @@ public class FlatController {
     @PostMapping(path = "/{flatId}/photo")
     public ResponseEntity<UploadFileResponse> uploadFlatPhoto(@PathVariable Long flatId,
                                                      @RequestParam("file") MultipartFile file) {
-        // TODO: security check
+        // TODO: MACIEK TO NIE DZIALA :_:
         FlatPhoto flatPhoto = flatPhotoService.storeFlatPhoto(flatId,file);
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/flats/" + flatId + "/photo/")
