@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pw.react.backend.appException.UnauthorizedException;
-import pw.react.backend.dao.CompanyRepository;
 import pw.react.backend.dao.FlatPhotoRepository;
 import pw.react.backend.dao.FlatRepository;
 import pw.react.backend.model.*;
-import pw.react.backend.service.CompanyService;
 import pw.react.backend.service.FlatPhotoService;
 import pw.react.backend.service.FlatService;
 import pw.react.backend.service.SecurityProvider;
@@ -27,10 +25,9 @@ import pw.react.backend.utils.PagedResponse;
 import org.springframework.data.domain.Page;
 import pw.react.backend.web.UploadFileResponse;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
@@ -74,7 +71,15 @@ public class FlatController {
         {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access to resources.");
         }
-
+        Date currentDate = new Date();
+        LocalDateTime currentLocalDate = LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+        for(Flat flat : flats)
+        {
+            if(currentLocalDate.compareTo(flat.getAvailableFrom()) > 0 && currentLocalDate.compareTo(flat.getAvailableTo()) < 0)
+                flat.setActive(true);
+            else
+                flat.setActive(false);
+        }
         List<Flat> result = flatRepository.saveAll(flats);
         return ResponseEntity.ok(result.stream().map(c -> String.valueOf(c.getId())).collect(joining(",")));
     }
@@ -123,9 +128,9 @@ public class FlatController {
         if (filter == true)
         {
             if (nameOrCity != null)
-                pageResult = flatRepository.findByNameContainingOrCityContainingAndReserved(nameOrCity, nameOrCity,false, paging);
+                pageResult = flatRepository.findByNameContainingOrCityContainingAndActive(nameOrCity, nameOrCity,true, paging);
             else
-                pageResult = flatRepository.findByReserved(false, paging);
+                pageResult = flatRepository.findByActive(true, paging);
         }
         else
         {
@@ -252,16 +257,15 @@ public class FlatController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        // TODO: MACIEK TO NIE DZIALA :_:
         FlatPhoto flatPhoto = flatPhotoService.storeFlatPhoto(flatId,file);
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/flats/" + flatId + "/photo/")
                 .path(flatPhoto.getFileName())
                 .toUriString();
-        return null;
-                //ResponseEntity.ok(new UploadFileResponse(
-                //flatPhoto.getFileName(), fileDownloadUri, file.getContentType(), file.getSize()\
-        // ));
+
+        return ResponseEntity.ok(new UploadFileResponse(
+                flatPhoto.getFileName(), fileDownloadUri, file.getContentType(), file.getSize()
+        ));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
@@ -304,6 +308,4 @@ public class FlatController {
         flatPhotoService.deleteFlatPhoto(Long.parseLong(flatId));
         return ResponseEntity.ok().body(String.format("Photo for the flat with id %s removed.", flatId));
     }
-
-
 }

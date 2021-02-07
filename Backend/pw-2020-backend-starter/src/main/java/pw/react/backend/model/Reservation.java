@@ -51,13 +51,6 @@ public class Reservation implements Serializable {
     @Column(name = "flatName")
     private String flatName;
 
-    //@OneToOne(mappedBy = "reservation")
-    //private Flat flat;
-    //@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //@ManyToOne
-    //@JoinColumn(name="flat_id")
-    //private Flat flat;
-
     @JsonBackReference
     @ManyToOne
     private Flat flat;
