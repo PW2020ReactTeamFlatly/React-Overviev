@@ -45,7 +45,7 @@ public class UserController {
         // ONLY FOR PRESENTATION PURPOSES
         if(userRepository.count() < 1)
         {
-            User admin_user = new User("admin", "admin", "security-token");
+            User admin_user = new User("admin", "admin", "secureMe");
             userRepository.save(admin_user);
         }
         //////////////////////////
