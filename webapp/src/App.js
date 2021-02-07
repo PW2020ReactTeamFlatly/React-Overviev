@@ -35,43 +35,44 @@ function App() {
 
   return (
     <div className="App">
-        <LoadingContext.Provider value={valueLoading}>
-          <SnackbarContext.Provider value={valueSnackbar}>
-            <LoginContext.Provider value ={valueLogin}>
-              <Main />
-              <LoginContext.Consumer>
-                {({token}) => {
-                  if(token === ""){
-                    return <Login/>;
-                  } else {
-                    return <div> </div>;
-                  }
-                }}
-              </LoginContext.Consumer>
-              <LoadingContext.Consumer>
-                {({loading}) => {
-                  if(loading){
-                    return <Loading />;
-                  } else {
-                    return <div> </div>;
-                  }
-                }}
-              </LoadingContext.Consumer>
-              <SnackbarContext.Consumer>
-                {({snackbar}) => {
-                  return (
-                    <Snackbar open={snackbar.open} onClose={snackbarClose} autoHideDuration={5000}>
-                      <Alert severity={snackbar.type === 'success' ? 'success': 'error'} 
-                        onClose={snackbarClose}>
-                        {snackbar.message}
-                      </Alert>
-                    </Snackbar>
-                  );
-                }}
-              </SnackbarContext.Consumer>
-            </LoginContext.Provider>
-          </SnackbarContext.Provider>
-        </LoadingContext.Provider>
+      <LoginContext.Provider value ={valueLogin}>
+        <LoginContext.Consumer>
+          {({token}) =>{
+            if(token===""){
+              return <Login/>
+            } else {
+              return(
+                <LoadingContext.Provider value={valueLoading}>
+                  <SnackbarContext.Provider value={valueSnackbar}>
+                      <Main/>
+                      <LoadingContext.Consumer>
+                        {({loading}) => {
+                          if(loading){
+                            return <Loading />;
+                          } else {
+                            return <div> </div>;
+                          }
+                        }}
+                      </LoadingContext.Consumer>
+                      <SnackbarContext.Consumer>
+                        {({snackbar}) => {
+                          return (
+                            <Snackbar open={snackbar.open} onClose={snackbarClose} autoHideDuration={5000}>
+                              <Alert severity={snackbar.type === 'success' ? 'success': 'error'} 
+                                onClose={snackbarClose}>
+                                {snackbar.message}
+                              </Alert>
+                            </Snackbar>
+                          );
+                        }}
+                  </SnackbarContext.Consumer>
+                  </SnackbarContext.Provider>
+                  </LoadingContext.Provider>
+              )
+            }
+          }}
+        </LoginContext.Consumer>
+      </LoginContext.Provider>        
     </div>
   );
 }

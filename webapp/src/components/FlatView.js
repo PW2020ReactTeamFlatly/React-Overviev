@@ -21,6 +21,7 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import indigo from '@material-ui/core/colors/indigo';
+import LoginContext from '../contexts/LoginContex';
 
 const useStyles = makeStyles((theme)=>({
   root: {
@@ -60,25 +61,35 @@ export default function FlatView(props) {
 
 
   const {flatId} = props;
-
+  const { token, setToken} = useContext(LoginContext);
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
   const [flat,SetFlat] = useState([]);
+
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            try {
-                const flatData = await axios.get('http://localhost:8080/flats/'+ flatId);
-                SetFlat(flatData.data);
-
-                console.log(flatData.data);
-            } catch (error) {
-                console.error(error);
-                setSnackbar({
-                    open: true,
-                    message: "Błąd ładowania danych",
-                    type: "error"
-                });
+            var config = {
+              method: 'get',
+              url: 'http://localhost:8080/flats/'+flatId,
+              headers: { 
+                'security-header': token
+              }
+            };
+            
+            try
+            {
+              const response = await axios(config);
+              SetFlat(response.data);
+            }
+            catch(error)
+            {
+              console.error(error);
+                        setSnackbar({
+                            open: true,
+                            message: "Błąd ładowania danych",
+                            type: "error"
+                        });
             }
             setLoading(false);
         }

@@ -26,6 +26,7 @@ import Link from '@material-ui/core/Link';
 import axios from 'axios';
 import SnackbarContext from '../contexts/SnackbarContext';
 import LoadingContext from '../contexts/LoadingContext';
+import LoginContext from '../contexts/LoginContex';
 import { Link as RouterLink } from 'react-router-dom';
 //import AddressForm from './AddressForm';
 //import PaymentForm from './PaymentForm';
@@ -97,6 +98,7 @@ const useStyles = makeStyles((theme) => ({
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
     const [file, SetFile] = useState(null);
+    const {token, setToken} = useContext(LoginContext);
 
     const { setSnackbar } = useContext(SnackbarContext);
 
@@ -154,10 +156,30 @@ const variable = [{
       console.log(name);
         try
         {
-          const dt = await axios.post('http://localhost:8080/flats', variable);
+          var config = {
+            method: 'post',
+            url: 'http://localhost:8080/flats',
+            headers: { 
+              'security-header': token, 
+              'Content-Type': 'application/json'
+            },
+            data : variable
+          };
+
+          
+          const dt = await axios(config);
           const dataForm = new FormData();
           dataForm.append('file', file);
-          await axios.post("http://localhost:8080/flats/"+dt.data+"/photo", dataForm);
+          var config2 = {
+            method: 'post',
+            url: "http://localhost:8080/flats/"+dt.data+"/photo",
+            headers: { 
+              'security-header': token, 
+              'Content-Type': 'application/json'
+            },
+            data : dataForm
+          };
+          await axios(config2);
         }
         catch(error) {
           setPosted(false);

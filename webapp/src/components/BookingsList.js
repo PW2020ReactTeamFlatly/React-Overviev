@@ -23,6 +23,7 @@ import LoadingContext from '../contexts/LoadingContext';
 import Button from '@material-ui/core/Button';
 import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
+import LoginContext from '../contexts/LoginContex';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -136,6 +137,7 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected, selected, setSelected, setBookings } = props;
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
+  const {token, setToken} = useContext(LoginContext);
 
   const onDeleteClick = () => {
     var axios = require('axios');
@@ -148,9 +150,8 @@ const EnhancedTableToolbar = (props) => {
         method: 'delete',
         url: 'http://localhost:8080/reservations/'+element,
         headers: { 
-          'security-header': 'secureMe'
-        },
-        data : data
+          'security-header': token
+        }
       };
 
       axios(config)
@@ -160,7 +161,14 @@ const EnhancedTableToolbar = (props) => {
       .then(()=>{
         async function fetchData() {
           try {
-              const flatData = await axios.get('http://localhost:8080/reservations');
+            var config = {
+              method: 'get',
+              url: 'http://localhost:8080/reservations/',
+              headers: { 
+                'security-header': token
+              }
+            };
+              const flatData = await axios(config);
               console.log(flatData.data)
               setBookings(flatData.data);
           } catch (error) {
@@ -260,14 +268,21 @@ export default function EnhancedTable() {
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
   const [bookings, setBookings] = useState([]);
-
+  const { token, setToken} = useContext(LoginContext);
 
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
             console.log("HERE");
             try {
-                const flatData = await axios.get('http://localhost:8080/reservations/');
+              var config = {
+                method: 'get',
+                url: 'http://localhost:8080/reservations/',
+                headers: { 
+                  'security-header': token
+                }
+              };
+                const flatData = await axios(config);
                 setBookings(flatData.data);
             } catch (error) {
                 console.error(error);

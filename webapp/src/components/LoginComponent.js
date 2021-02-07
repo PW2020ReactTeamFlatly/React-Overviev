@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,7 +11,10 @@ import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import LoginContext from '../contexts/LoginContex';
+import SnackbarContext from '../contexts/SnackbarContext';
 import Container from '@material-ui/core/Container';
+import axios from 'axios';
 
 function Copyright() {
   return (
@@ -48,11 +51,68 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
   const classes = useStyles();
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const {setToken} = useContext(LoginContext);
+  const {setSnackbar} = useContext(SnackbarContext);
 
-  const onClick = (e) =>
-  {
-      
+  const onLoginChange = (event)=>{
+    setLogin(event.target.value);
   }
+
+  const onPasswordChange = (event)=> {
+    setPassword(event.target.value);
+  }
+
+  const authorise = async (login, password) =>
+  {
+    var data = JSON.stringify([{"login":login,"password":password}]);
+
+    var config = {
+      method: 'post',
+      url: 'http://localhost:8080/user',
+      headers: { 
+        'security-header': '', 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Credentials':''
+      },
+      data : data
+    };
+    
+    try
+    {
+      axios(config)
+      .then(function (response) 
+      {
+        console.log(response);
+        if(response.status === 200)
+        {
+          setToken(response.data);
+        }
+        else
+        {
+          setToken(response.nothing)
+        }
+      })
+      .catch((error)=>{
+        setSnackbar({
+          open: true,
+          message: "Incorrect data!",
+          type: "error",
+        });
+      })
+    }
+    catch (error) 
+    {
+      //console.log(error);
+      setSnackbar({
+        open: true,
+        message: "Incorrect data!",
+        type: "error"
+      });
+    };
+  }
+    
 
   return (
     <Container component="main" maxWidth="xs">
@@ -75,6 +135,7 @@ export default function SignIn() {
             name="login"
             autoComplete="login"
             autoFocus
+            onChange = {onLoginChange}
           />
           <TextField
             variant="outlined"
@@ -86,14 +147,14 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange = {onPasswordChange}
           />
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={onClick}
+            onClick={() => {authorise(login, password)}}
           >
             Sign In
           </Button>

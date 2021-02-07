@@ -19,6 +19,7 @@ import axios from 'axios';
 import SnackbarContext from '../contexts/SnackbarContext';
 import LoadingContext from '../contexts/LoadingContext';
 import { Link as RouterLink } from 'react-router-dom';
+import LoginContext from '../contexts/LoginContex';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -76,14 +77,23 @@ export default function EditFlat(props) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [file, SetFile] = useState(null);
+  const { token, setToken} = useContext(LoginContext);
 
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       try {
-        console.log('http://localhost:8080/flats/' + flatId);
-        const flatData = await axios.get('http://localhost:8080/flats/' + flatId);
+        var config = {
+          method: 'get',
+          url: 'http://localhost:8080/flats/' + flatId,
+          headers: { 
+            'security-header': 'eb23394d-feb4-4dd1-b1be-2327dc25d1eb'
+          }
+        };
+
+        const flatData = await axios(config);
+
         if (flatData.data.name != null)
           setName(flatData.data.name);
         if (flatData.data.address != null)
@@ -169,13 +179,33 @@ const handleFileChange = (event) => {
   const handleNext = async () => {
 
     console.log(variable);
+
+    var config = {
+      method: 'put',
+      url: 'http://localhost:8080/flats/' + flatId,
+      headers: { 
+        'security-header': token,
+        'Access-Control-Allow-Origin':''
+      },
+      data: variable
+    };
+
     try {
-      await axios.put('http://localhost:8080/flats/' + flatId, variable);
+      await axios(config);
       if(file!==null)
       {
-      const dataForm = new FormData();
-      dataForm.append('file', file);
-      await axios.post("http://localhost:8080/flats/"+flatId+"/photo", dataForm);
+        const dataForm = new FormData();
+        dataForm.append('file', file);
+        var config2 = {
+          method: 'post',
+          url: "http://localhost:8080/flats/"+flatId+"/photo",
+          headers: { 
+            'security-header': token,
+            'Access-Control-Allow-Origin':''
+          },
+          data: dataForm
+        };
+        await axios(config2);
       }
     }
     catch (error) {

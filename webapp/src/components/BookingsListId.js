@@ -23,6 +23,7 @@ import LoadingContext from '../contexts/LoadingContext';
 import Button from '@material-ui/core/Button';
 import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
+import LoginContext from '../contexts/LoginContex';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -136,6 +137,7 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected, selected, setSelected, setBookings, flatId } = props;
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
+  const { token, setToken} = useContext(LoginContext);
 
   const onDeleteClick = () => {
     var axios = require('axios');
@@ -148,7 +150,8 @@ const EnhancedTableToolbar = (props) => {
         method: 'delete',
         url: 'http://localhost:8080/reservations/'+element,
         headers: { 
-          'security-header': 'secureMe'
+          'security-header': token,
+          'Access-Control-Allow-Origin':''
         },
         data : data
       };
@@ -159,9 +162,17 @@ const EnhancedTableToolbar = (props) => {
       })
       .then(()=>{
         async function fetchData() {
+          setLoading(true);
+          console.log("HERE");
           try {
-              const flatData = await axios.get('http://localhost:8080/flats/res/'+flatId);
-              console.log(flatData.data)
+            var config = {
+              method: 'get',
+              url: 'http://localhost:8080/flats/res/'+flatId,
+              headers: { 
+                'security-header': token
+              }
+            };
+              const flatData = await axios(config);
               setBookings(flatData.data);
           } catch (error) {
               console.error(error);
@@ -171,8 +182,9 @@ const EnhancedTableToolbar = (props) => {
                   type: "error"
               });
           }
+          setLoading(false);
       }
-    
+  
       fetchData();
 
       })
@@ -260,30 +272,36 @@ export default function EnhancedTable(props) {
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
   const [bookings, setBookings] = useState([]);
-
+  const { token, setToken} = useContext(LoginContext);
   const {flatId} = props;
 
-    useEffect(() => {
-        async function fetchData() {
-            setLoading(true);
-            try {
-                console.log(flatId);
-                console.log("SIUUHUUU");
-                const flatData = await axios.get(`http://localhost:8080/flats/res/${flatId}`);
-                setBookings(flatData.data);
-            } catch (error) {
-                console.error(error);
-                setSnackbar({
-                    open: true,
-                    message: "Błąd ładowania danych",
-                    type: "error"
-                });
+  useEffect(() => {
+    async function fetchData() {
+        setLoading(true);
+        console.log("HERE");
+        try {
+          var config = {
+            method: 'get',
+            url: 'http://localhost:8080/flats/res/'+flatId,
+            headers: { 
+              'security-header': token
             }
-            setLoading(false);
+          };
+            const flatData = await axios(config);
+            setBookings(flatData.data);
+        } catch (error) {
+            console.error(error);
+            setSnackbar({
+                open: true,
+                message: "Błąd ładowania danych",
+                type: "error"
+            });
         }
+        setLoading(false);
+    }
 
-        fetchData();
-    }, [setBookings, setLoading, setSnackbar,]);
+    fetchData();
+}, [setBookings, setLoading, setSnackbar,]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
