@@ -42,46 +42,81 @@ public class FlatController {
     private final FlatService flatService;
     private FlatPhotoService flatPhotoService;
     private FlatPhotoRepository flatPhotoRepository;
+    private final SecurityProvider securityService;
 
     @Autowired
     public FlatController(FlatRepository flatRepository,
                           FlatService flatService,
                           FlatPhotoRepository flatPhotoRepository,
-                          FlatPhotoService flatPhotoService) {
+                          FlatPhotoService flatPhotoService,
+                            SecurityProvider securityService) {
         this.flatRepository = flatRepository;
         this.flatService = flatService;
         this.flatPhotoRepository = flatPhotoRepository;
         this.flatPhotoService = flatPhotoService;
+        this.securityService = securityService;
+    }
+
+    private void logHeaders(@RequestHeader HttpHeaders headers) {
+        logger.info("Controller request headers {}",
+                headers.entrySet()
+                        .stream()
+                        .map(entry -> String.format("%s->[%s]", entry.getKey(), String.join(",", entry.getValue())))
+                        .collect(joining(","))
+        );
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(path = "")
-    public ResponseEntity<String> createFlats(@RequestBody List<Flat> flats) {
+    public ResponseEntity<String> createFlats(@RequestHeader HttpHeaders headers, @RequestBody List<Flat> flats) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access to resources.");
+        }
+
         List<Flat> result = flatRepository.saveAll(flats);
         return ResponseEntity.ok(result.stream().map(c -> String.valueOf(c.getId())).collect(joining(",")));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/{flatId}")
-    public ResponseEntity<Flat>  getFlat(@PathVariable Long flatId){
+    public ResponseEntity<Flat>  getFlat(@RequestHeader HttpHeaders headers, @PathVariable Long flatId){
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Flat.EMPTY);
+        }
+
         return ResponseEntity.ok(flatRepository.findById(flatId).orElseGet(() -> Flat.EMPTY));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/res/{flatId}")
-    public ResponseEntity<Collection<Reservation>> getReservationsByFlatId(@PathVariable Long flatId){
+    public ResponseEntity<Collection<Reservation>> getReservationsByFlatId(@RequestHeader HttpHeaders headers, @PathVariable Long flatId){
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         return ResponseEntity.ok(flatService.getReservationsByFlatId(flatId));
     }
 
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
-    public ResponseEntity<PagedResponse<Collection<Flat>>> getAllFlats(@RequestParam(required = false) String nameOrCity,
+    public ResponseEntity<PagedResponse<Collection<Flat>>> getAllFlats(@RequestHeader HttpHeaders headers,
+                                                                       @RequestParam(required = false) String nameOrCity,
                                                                        @RequestParam(required = false,defaultValue = "false") Boolean filter,
                                                                        @RequestParam(defaultValue = "false") boolean sort,
                                                                        @RequestParam(defaultValue = "0") int page,
                                                                        @RequestParam(defaultValue = "10") int size){
-        //if(authFilter.IsInvalidToken(token)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
 
         Pageable paging = PageRequest.of(page, size, sort? Sort.by("city").ascending() : Sort.by("city").descending());
         Page<Flat> pageResult;
@@ -105,7 +140,13 @@ public class FlatController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/page/{pageId}")
-    public ResponseEntity<Collection<Flat>> getPage(@PathVariable Long pageId){
+    public ResponseEntity<Collection<Flat>> getPage(@RequestHeader HttpHeaders headers, @PathVariable Long pageId){
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         Collection<Flat> flats = flatRepository.findAll();
         ArrayList<Flat> result = new ArrayList<Flat>();
 
@@ -132,7 +173,13 @@ public class FlatController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/pagedresponse/{pageId}")
-    public ResponseEntity<PagedResponse<Collection<Flat>>> getPagedResponse(@PathVariable Long pageId){
+    public ResponseEntity<PagedResponse<Collection<Flat>>> getPagedResponse(@RequestHeader HttpHeaders headers, @PathVariable Long pageId){
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         Collection<Flat> flats = flatRepository.findAll();
         ArrayList<Flat> result = new ArrayList<Flat>();
 
@@ -165,27 +212,46 @@ public class FlatController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping(path = "/{flatId}")
-    public Flat updateFlat(@PathVariable Long flatId,
+    public ResponseEntity<Flat> updateFlat(@RequestHeader HttpHeaders headers,
+                           @PathVariable Long flatId,
                            @RequestBody Flat updatedFlat) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Flat.EMPTY);
+        }
+
         Flat result;
         result = flatService.updateFlat(flatId, updatedFlat);
-        return result;
+        return ResponseEntity.ok(result);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping(path = "/{flatId}")
-    public ResponseEntity<String> deleteFlat(@PathVariable Long flatId) {
-            boolean deleted = flatService.deleteFlat(flatId);
-            if (!deleted) {
-                return ResponseEntity.badRequest().body(String.format("Flat with id %s does not exists.", flatId));
-            }
+    public ResponseEntity<String> deleteFlat(@RequestHeader HttpHeaders headers, @PathVariable Long flatId) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        boolean deleted = flatService.deleteFlat(flatId);
+        if (!deleted) {
+            return ResponseEntity.badRequest().body(String.format("Flat with id %s does not exists.", flatId));
+        }
             return ResponseEntity.ok(String.format("Flat with id %s deleted.", flatId));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(path = "/{flatId}/photo")
-    public ResponseEntity<UploadFileResponse> uploadFlatPhoto(@PathVariable Long flatId,
+    public ResponseEntity<UploadFileResponse> uploadFlatPhoto(@RequestHeader HttpHeaders headers, @PathVariable Long flatId,
                                                      @RequestParam("file") MultipartFile file) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         // TODO: MACIEK TO NIE DZIALA :_:
         FlatPhoto flatPhoto = flatPhotoService.storeFlatPhoto(flatId,file);
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -200,14 +266,24 @@ public class FlatController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value = "/{flatId}/photo", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public @ResponseBody byte[] getPhoto(@PathVariable Long flatId) {
-        FlatPhoto flatPhoto = flatPhotoService.getFlatPhoto(flatId);
-        return flatPhoto.getData();
+    public @ResponseBody byte[] getPhoto(@RequestHeader HttpHeaders headers, @PathVariable Long flatId) {
+        logHeaders(headers);
+        throw new UnauthorizedException("Request is unauthorized");
+
+
+        //FlatPhoto flatPhoto = flatPhotoService.getFlatPhoto(flatId);
+        //return flatPhoto.getData();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value = "/{flatId}/photo2")
     public ResponseEntity<Resource> getPhoto2(@RequestHeader HttpHeaders headers, @PathVariable Long flatId) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         FlatPhoto flatPhoto = flatPhotoService.getFlatPhoto(flatId);
 
         return ResponseEntity.ok()
@@ -218,7 +294,13 @@ public class FlatController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping(value = "/{flatId}/photo")
-    public ResponseEntity<String> removePhoto(@PathVariable String flatId) {
+    public ResponseEntity<String> removePhoto(@RequestHeader HttpHeaders headers, @PathVariable String flatId) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         flatPhotoService.deleteFlatPhoto(Long.parseLong(flatId));
         return ResponseEntity.ok().body(String.format("Photo for the flat with id %s removed.", flatId));
     }

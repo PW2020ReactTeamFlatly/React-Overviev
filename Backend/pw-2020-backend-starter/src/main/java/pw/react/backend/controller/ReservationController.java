@@ -4,6 +4,8 @@ package pw.react.backend.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pw.react.backend.dao.CompanyRepository;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.stream.Collectors.joining;
+
 @RestController
 @RequestMapping(path = "/reservations")
 public class ReservationController {
@@ -24,18 +28,34 @@ public class ReservationController {
 
     private final ReservationRepository reservationRepository;
     private final ReservationService reservationService;
-
+    private final SecurityProvider securityService;
     private FlatService flatService;
 
     @Autowired
-    public ReservationController(ReservationRepository reservationRepository, ReservationService reservationService, FlatService flatService) {
+    public ReservationController(ReservationRepository reservationRepository, ReservationService reservationService, FlatService flatService, SecurityProvider securityService) {
         this.reservationRepository = reservationRepository;
         this.reservationService = reservationService;
         this.flatService = flatService;
+        this.securityService = securityService;
+    }
+
+    private void logHeaders(@RequestHeader HttpHeaders headers) {
+        logger.info("Controller request headers {}",
+                headers.entrySet()
+                        .stream()
+                        .map(entry -> String.format("%s->[%s]", entry.getKey(), String.join(",", entry.getValue())))
+                        .collect(joining(","))
+        );
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<Collection<Reservation>> createReservations(@RequestBody Collection<ReservationDTO> reservationsDTOs) {
+    public ResponseEntity<Collection<Reservation>> createReservations(@RequestHeader HttpHeaders headers, @RequestBody Collection<ReservationDTO> reservationsDTOs) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         List<Reservation> reservations = new ArrayList<Reservation>();
         for (ReservationDTO reservationDTO : reservationsDTOs) {
 
@@ -55,20 +75,38 @@ public class ReservationController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "/{reservationId}")
-    public ResponseEntity<Reservation> getReservation(@PathVariable Long reservationId) {
+    public ResponseEntity<Reservation> getReservation(@RequestHeader HttpHeaders headers, @PathVariable Long reservationId) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Reservation.EMPTY);
+        }
+
         return ResponseEntity.ok(reservationRepository.findById(reservationId).orElseGet(() -> Reservation.EMPTY));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "")
-    public ResponseEntity<Collection<Reservation>> getAllReservations() {
+    public ResponseEntity<Collection<Reservation>> getAllReservations(@RequestHeader HttpHeaders headers) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         return ResponseEntity.ok(reservationRepository.findAll());
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping(path = "/{reservationId}")
-    public ResponseEntity<Reservation> updateReservation(@PathVariable Long reservationId,
+    public ResponseEntity<Reservation> updateReservation(@RequestHeader HttpHeaders headers, @PathVariable Long reservationId,
                                   @RequestBody Reservation updatedReservation) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Reservation.EMPTY);
+        }
+
         Reservation result;
         result = reservationService.updateReservation(reservationId, updatedReservation);
         return ResponseEntity.ok(result);
@@ -76,7 +114,13 @@ public class ReservationController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping(path = "/{reservationId}")
-    public ResponseEntity<String> deleteReservation(@PathVariable Long reservationId) {
+    public ResponseEntity<String> deleteReservation(@RequestHeader HttpHeaders headers, @PathVariable Long reservationId) {
+        logHeaders(headers);
+        if (!securityService.isAuthorized(headers))
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Request is unauthorized");
+        }
+
         boolean deleted = reservationService.deleteReservation(reservationId);
         if (!deleted) {
             return ResponseEntity.badRequest().body(String.format("Reservation with id %s does not exists.", reservationId));
