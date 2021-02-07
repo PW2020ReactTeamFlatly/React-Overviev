@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.joining;
 @RestController
 @RequestMapping(path = "/flats")
 public class FlatController {
-    private final Logger logger = LoggerFactory.getLogger(CompanyController.class);
+    private final Logger logger = LoggerFactory.getLogger(FlatController.class);
     private final FlatRepository flatRepository;
     private final FlatService flatService;
     private FlatPhotoService flatPhotoService;
@@ -125,7 +125,7 @@ public class FlatController {
 
         Pageable paging = PageRequest.of(page, size, sort? Sort.by("city").ascending() : Sort.by("city").descending());
         Page<Flat> pageResult;
-        if (filter == "active")
+        if (filter.equals("active"))
         {
             if (nameOrCity != null)
                 pageResult = flatRepository.findByNameContainingOrCityContainingAndActive(nameOrCity, nameOrCity,true, paging);
@@ -249,7 +249,7 @@ public class FlatController {
 
         Pageable paging = PageRequest.of(page, size, sort? Sort.by("city").ascending() : Sort.by("city").descending());
         Page<Flat> pageResult;
-        if (filter == "active")
+        if (filter.equals("active"))
         {
             if (nameOrCity != null)
                 pageResult = flatRepository.findByNameContainingOrCityContainingAndActive(nameOrCity, nameOrCity,true, paging);

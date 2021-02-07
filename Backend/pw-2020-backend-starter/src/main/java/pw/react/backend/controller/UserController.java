@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.joining;
 @RestController
 @RequestMapping(path = "/user")
 public class UserController {
-    private final Logger logger = LoggerFactory.getLogger(CompanyController.class);
+    private final Logger logger = LoggerFactory.getLogger(FlatController.class);
 
     private final UserRepository userRepository;
 

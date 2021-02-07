@@ -19,10 +19,12 @@ public class HttpService implements HttpClient {
 
     private final Logger logger = LoggerFactory.getLogger(HttpService.class);
 
+    private final SecurityProvider securityProvider;
     private final RestTemplate restTemplate;
 
-    public HttpService(RestTemplate restTemplate) {
+    public HttpService(RestTemplate restTemplate, SecurityProvider securityProvider) {
         this.restTemplate = restTemplate;
+        this.securityProvider = securityProvider;
     }
 
     HttpService withCarlyUrl(String carlyUrl) {

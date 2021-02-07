@@ -9,7 +9,7 @@ import pw.react.backend.model.Reservation;
 
 @Service
 class ReservationMainService implements ReservationService {
-    private final Logger logger = LoggerFactory.getLogger(CompanyMainService.class);
+    private final Logger logger = LoggerFactory.getLogger(FlatMainService.class);
 
     private ReservationRepository reservationRepository;
 

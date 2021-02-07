@@ -53,8 +53,8 @@ public class MainConfig {
     }
 
     @Bean
-    public HttpClient httpClient(RestTemplate restTemplate) {
-        return new HttpService(restTemplate)
+    public HttpClient httpClient(RestTemplate restTemplate, SecurityProvider securityProvider) {
+        return new HttpService(restTemplate,securityProvider)
                 .withCarlyUrl(carlyUrl)
                 .withFlatlyUrl(flatlyUrl)
                 .withParklyUrl(parklyUrl)
