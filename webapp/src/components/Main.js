@@ -6,6 +6,7 @@ import CreateFlat from './CreateFlat';
 import BookingsList from './BookingsList';
 import BookingsListId from './BookingsListId';
 import EditFlat from './EditFlat'
+import LoginComponent from './LoginComponent'
 
 
 const BookingsListWithId = ({match}) =>{

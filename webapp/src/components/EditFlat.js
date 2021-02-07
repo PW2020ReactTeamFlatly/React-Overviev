@@ -102,7 +102,6 @@ export default function EditFlat(props) {
           setFrom(flatData.data.availableFrom.substring(0, 10));
          if (flatData.data.availableTo != null)
           setTo(flatData.data.availableTo.substring(0, 10));
-
       } catch (error) {
         console.error(error);
         setSnackbar({
