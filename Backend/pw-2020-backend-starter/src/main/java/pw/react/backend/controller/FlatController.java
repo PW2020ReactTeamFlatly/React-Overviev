@@ -113,7 +113,7 @@ public class FlatController {
     @GetMapping(path = "")
     public ResponseEntity<PagedResponse<Collection<Flat>>> getAllFlats(@RequestHeader HttpHeaders headers,
                                                                        @RequestParam(required = false) String nameOrCity,
-                                                                       @RequestParam(required = false,defaultValue = "false") Boolean filter,
+                                                                       @RequestParam(required = false,defaultValue = "inactive") String filter,
                                                                        @RequestParam(defaultValue = "false") boolean sort,
                                                                        @RequestParam(defaultValue = "0") int page,
                                                                        @RequestParam(defaultValue = "10") int size){
@@ -125,7 +125,7 @@ public class FlatController {
 
         Pageable paging = PageRequest.of(page, size, sort? Sort.by("city").ascending() : Sort.by("city").descending());
         Page<Flat> pageResult;
-        if (filter == true)
+        if (filter == "active")
         {
             if (nameOrCity != null)
                 pageResult = flatRepository.findByNameContainingOrCityContainingAndActive(nameOrCity, nameOrCity,true, paging);
