@@ -71,12 +71,12 @@ export default function EditFlat(props) {
   const [sleeps, setSleeps] = React.useState(0);
   const [rating, setRating] = React.useState(0);
   const [posted, setPosted] = useState(true);
-  const [flat, SetFlat] = useState([]);
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [file, SetFile] = useState(null);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -84,9 +84,6 @@ export default function EditFlat(props) {
       try {
         console.log('http://localhost:8080/flats/' + flatId);
         const flatData = await axios.get('http://localhost:8080/flats/' + flatId);
-        const fl = await axios.get('http://localhost:8080/flats/' + flatId + '/photo2');
-        console.log(fl);
-        SetFlat(flatData.data);
         if (flatData.data.name != null)
           setName(flatData.data.name);
         if (flatData.data.address != null)
@@ -105,13 +102,6 @@ export default function EditFlat(props) {
           setFrom(flatData.data.availableFrom.substring(0, 10));
          if (flatData.data.availableTo != null)
           setTo(flatData.data.availableTo.substring(0, 10));
-          if (fl.data != null)
-          {
-            SetFile(fl.data);
-            console.log(fl.data);
-          }
-
-
       } catch (error) {
         console.error(error);
         setSnackbar({
@@ -120,11 +110,10 @@ export default function EditFlat(props) {
           type: "error"
         });
       }
-      setLoading(false);
-      
+      setLoading(false);      
     }
     fetchData();
-  }, [SetFlat, setLoading, setSnackbar,]);
+  }, [ setLoading, setSnackbar,]);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -182,9 +171,12 @@ const handleFileChange = (event) => {
     console.log(variable);
     try {
       await axios.put('http://localhost:8080/flats/' + flatId, variable);
+      if(file!==null)
+      {
       const dataForm = new FormData();
       dataForm.append('file', file);
       await axios.post("http://localhost:8080/flats/"+flatId+"/photo", dataForm);
+      }
     }
     catch (error) {
       setPosted(false);
@@ -364,6 +356,9 @@ const handleFileChange = (event) => {
           />
         </Button>
                       </Grid>
+        <Grid item xs={12} sm={12}>
+          <label>{file ? file.name : ""}</label>
+        </Grid>
                     </Grid>
                   </React.Fragment>
                   <div className={classes.buttons}>

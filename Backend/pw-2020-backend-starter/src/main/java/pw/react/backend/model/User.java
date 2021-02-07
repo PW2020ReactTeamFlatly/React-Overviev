@@ -24,11 +24,13 @@ public class User implements Serializable {
     public static User EMPTY = new User();
 
     public User() {}
-    public User (String log, String pass, String key)
+    public User (String log, String pass, String key, String first_name, String second_name)
     {
         this.user_login = log;
         this.user_password = pass;
         this.user_key = key;
+        this.first_name = first_name;
+        this.second_name = second_name;
     }
 
     @Id
@@ -40,4 +42,8 @@ public class User implements Serializable {
     private String user_password;
     @Column(name = "user_key")
     private String user_key;
+    @Column(name = "first_name")
+    private String first_name;
+    @Column(name = "second_name")
+    private String second_name;
 }

@@ -16,8 +16,10 @@ import HomeIcon from '@material-ui/icons/Home';
 import { Link as RouterLink } from 'react-router-dom';
 import SnackbarContext from '../contexts/SnackbarContext';
 import LoadingContext from '../contexts/LoadingContext';
+import LoginContex from '../contexts/LoginContex';
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField';
+import LoginContext from '../contexts/LoginContex';
 
 
 function Copyright() {
@@ -71,6 +73,7 @@ export default function FlatList() {
   const classes = useStyles();
   const { setLoading } = useContext(LoadingContext);
   const { setSnackbar } = useContext(SnackbarContext);
+  const { setToken} = useContext(LoginContext);
   const [flats,SetFlats] = useState([]);
   const [page, SetPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);

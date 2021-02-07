@@ -347,6 +347,9 @@ const variable = [{
           />
         </Button>
         </Grid>
+        <Grid item xs={12} sm={12}>
+          <label>{file?file.name:""}</label>
+        </Grid>
       </Grid>
     </React.Fragment>
                   <div className={classes.buttons}>
