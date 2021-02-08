@@ -108,8 +108,20 @@ export default function FlatList() {
           },
           responseType: 'blob'
         };
+        try{
         const blob = await axios(config2)            
         phts.push(URL.createObjectURL(blob.data));
+        }
+        catch(error)
+        {
+          console.error(error);
+                setSnackbar({
+                    open: true,
+                    message: "Loading data failed",
+                    type: "error"
+                });
+          phts.push("");
+        }
       }
       SetPhotos(phts);
       setPageCount(response.data.pageCount);
@@ -249,7 +261,7 @@ export default function FlatList() {
           {/* End hero unit */}
           <Grid container spacing={4}>
             {flats.map((flat) => (
-              <Grid item key={flat} xs={12} sm={6} md={4}>
+              <Grid item key={flat.id} xs={12} sm={6} md={4}>
                 <Card className={classes.card}>
                   <CardMedia
                     className={classes.cardMedia}

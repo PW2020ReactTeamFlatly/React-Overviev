@@ -166,9 +166,7 @@ const variable = [{
               'Content-Type': 'application/json'
             },
             data : variable
-          };
-
-          
+          };          
           const dt = await axios(config);
           const dataForm = new FormData();
           dataForm.append('file', file);
@@ -181,9 +179,8 @@ const variable = [{
             },
             data : dataForm
           };
-          
             await axios(config2);
-          setActiveStep(activeStep + 1);
+            setActiveStep(activeStep + 1);
 
         }
         }
