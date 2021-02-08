@@ -156,6 +156,8 @@ const variable = [{
       console.log(name);
         try
         {
+          if(file)
+          {
           var config = {
             method: 'post',
             url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats',
@@ -179,10 +181,11 @@ const variable = [{
             },
             data : dataForm
           };
-          if(file)
-          {
+          
             await axios(config2);
-          }
+          setActiveStep(activeStep + 1);
+
+        }
         }
         catch(error) {
           setPosted(false);
@@ -190,10 +193,10 @@ const variable = [{
             open: true,
             type: 'error',
             message: 'Not able to post new flat'
-        });        
+        });  
+
     }
       
-      setActiveStep(activeStep + 1);
     };
   
     const handleBack = () => {

@@ -80,13 +80,14 @@ export default function FlatList() {
   const [searchText, setSearchText] = useState("");
   const [sort, setSort] = useState(false);
   const [photo, SetPhotos] = useState(undefined);
+  const [active, setActive] = useState(false);
   let j=0;
 
-  async function fetchData(pg, sort, searchText) {
+  async function fetchData(pg, sort, searchText, active) {
     setLoading(true);
     var config = {
       method: 'get',
-      url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats?nameOrCity='+searchText+"&sort="+sort+"&page="+pg,
+      url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats?nameOrCity='+searchText+"&sort="+sort+"&page="+pg+(active ? "&filter=active" : ""),
       headers: { 
         'security-header': token
       }
@@ -111,6 +112,7 @@ export default function FlatList() {
         phts.push(URL.createObjectURL(blob.data));
       }
       SetPhotos(phts);
+      setPageCount(response.data.pageCount);
       SetFlats(response.data.data);
     }
     catch(error)
@@ -126,14 +128,14 @@ export default function FlatList() {
 }
 
     useEffect(() => {
-        fetchData(0, sort, searchText);
+        fetchData(0, sort, searchText, false);
     }, [SetFlats, setLoading, setSnackbar, setPageCount]);
 
   const onClickNext = ()=>
   {
     if(page<pageCount-1)
     {
-      fetchData(page+1, sort, searchText);
+      fetchData(page+1, sort, searchText, active);
       SetPage(page+1);
     }
   }
@@ -142,7 +144,7 @@ export default function FlatList() {
   {
     if(page>0)
     {
-      fetchData(page-1, sort, "");
+      fetchData(page-1, sort, "", active);
       SetPage(page-1);
     }
   }
@@ -170,18 +172,23 @@ export default function FlatList() {
           });
         }
 
-        fetchData(page, sort, searchText);
+        fetchData(page, sort, searchText, active);
   }
 
   const onTextChange = (e) => {
-    fetchData(0, sort, e.target.value);
+    fetchData(0, sort, e.target.value, active);
     setSearchText(e.target.value);
     SetPage(0);
   }
   
   const sortChange = () => {
-    fetchData(page, !sort, searchText);
+    fetchData(page, !sort, searchText, active);
     setSort(!sort);
+  }
+
+  const onActiveChange = (event) => {
+    fetchData(page, sort, searchText, !active);
+    setActive(!active);
   }
 
   return (
@@ -228,6 +235,11 @@ export default function FlatList() {
                 <Grid item>
                   <TextField label="Search" onChange={onTextChange}>
                   </TextField>
+                </Grid>
+                <Grid item>
+                  <input type="checkbox" checked={active} onChange={onActiveChange}/>
+                  <br/>
+                  <label>Active</label>
                 </Grid>
               </Grid>
             </div>

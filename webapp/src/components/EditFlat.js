@@ -197,7 +197,7 @@ const handleFileChange = (event) => {
         const dataForm = new FormData();
         dataForm.append('file', file);
         var config2 = {
-          method: 'post',
+          method: 'put',
           url: "http://flatly.us-east-2.elasticbeanstalk.com/flats/"+flatId+"/photo",
           headers: { 
             'security-header': token,
