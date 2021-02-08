@@ -86,7 +86,7 @@ export default function FlatList() {
     setLoading(true);
     var config = {
       method: 'get',
-      url: 'http://localhost:8080/flats?nameOrCity='+searchText+"&sort="+sort+"&page="+page,
+      url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats?nameOrCity='+searchText+"&sort="+sort+"&page="+pg,
       headers: { 
         'security-header': token
       }
@@ -101,7 +101,7 @@ export default function FlatList() {
       {
         var config2 = {
           method: 'get',
-          url: 'http://localhost:8080/flats/'+response.data.data[i].id+'/photo2',
+          url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats/'+response.data.data[i].id+'/photo2',
           headers: { 
             'security-header': token
           },
@@ -118,7 +118,7 @@ export default function FlatList() {
       console.error(error);
                 setSnackbar({
                     open: true,
-                    message: "Błąd ładowania danych",
+                    message: "Loading data failed",
                     type: "error"
                 });
     }
@@ -153,7 +153,7 @@ export default function FlatList() {
         {
           var config = {
             method: 'delete',
-            url: 'http://localhost:8080/flats/'+flatId,
+            url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats/'+flatId,
             headers: { 
               'security-header': token, 
               'Content-Type': 'application/json'
@@ -165,7 +165,7 @@ export default function FlatList() {
           console.error(error);
           setSnackbar({
               open: true,
-              message: "Nie ma zdjęcia",
+              message: "Deleting failed",
               type: "error"
           });
         }

@@ -70,7 +70,7 @@ export default function SignIn() {
 
     var config = {
       method: 'post',
-      url: 'http://localhost:8080/user',
+      url: 'http://flatly.us-east-2.elasticbeanstalk.com/user',
       headers: { 
         'security-header': '', 
         'Content-Type': 'application/json',

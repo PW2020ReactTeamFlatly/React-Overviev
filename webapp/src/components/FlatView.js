@@ -71,7 +71,7 @@ export default function FlatView(props) {
             setLoading(true);
             var config = {
               method: 'get',
-              url: 'http://localhost:8080/flats/'+flatId,
+              url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats/'+flatId,
               headers: { 
                 'security-header': token
               }
@@ -84,7 +84,7 @@ export default function FlatView(props) {
 
               var config2 = {
                 method: 'get',
-                url: 'http://localhost:8080/flats/'+flatId+'/photo2',
+                url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats/'+flatId+'/photo2',
                 headers: { 
                   'security-header': token
                 },

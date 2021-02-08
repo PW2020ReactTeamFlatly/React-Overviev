@@ -86,9 +86,9 @@ export default function EditFlat(props) {
       try {
         var config = {
           method: 'get',
-          url: 'http://localhost:8080/flats/' + flatId,
+          url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats/' + flatId,
           headers: { 
-            'security-header': 'eb23394d-feb4-4dd1-b1be-2327dc25d1eb'
+            'security-header': token
           }
         };
 
@@ -116,7 +116,7 @@ export default function EditFlat(props) {
         console.error(error);
         setSnackbar({
           open: true,
-          message: "Błąd ładowania danych",
+          message: "Loading data failed!!!",
           type: "error"
         });
       }
@@ -182,7 +182,7 @@ const handleFileChange = (event) => {
 
     var config = {
       method: 'put',
-      url: 'http://localhost:8080/flats/' + flatId,
+      url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats/' + flatId,
       headers: { 
         'security-header': token,
         'Access-Control-Allow-Origin':''
@@ -198,7 +198,7 @@ const handleFileChange = (event) => {
         dataForm.append('file', file);
         var config2 = {
           method: 'post',
-          url: "http://localhost:8080/flats/"+flatId+"/photo",
+          url: "http://flatly.us-east-2.elasticbeanstalk.com/flats/"+flatId+"/photo",
           headers: { 
             'security-header': token,
             'Access-Control-Allow-Origin':''

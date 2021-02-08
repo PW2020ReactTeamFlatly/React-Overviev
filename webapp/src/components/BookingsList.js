@@ -148,7 +148,7 @@ const EnhancedTableToolbar = (props) => {
     
       var config = {
         method: 'delete',
-        url: 'http://localhost:8080/reservations/'+element,
+        url: 'http://flatly.us-east-2.elasticbeanstalk.com/reservations/'+element,
         headers: { 
           'security-header': token
         }
@@ -163,7 +163,7 @@ const EnhancedTableToolbar = (props) => {
           try {
             var config = {
               method: 'get',
-              url: 'http://localhost:8080/reservations/',
+              url: 'http://flatly.us-east-2.elasticbeanstalk.com/reservations/',
               headers: { 
                 'security-header': token
               }
@@ -277,7 +277,7 @@ export default function EnhancedTable() {
             try {
               var config = {
                 method: 'get',
-                url: 'http://localhost:8080/reservations/',
+                url: 'http://flatly.us-east-2.elasticbeanstalk.com/reservations/',
                 headers: { 
                   'security-header': token
                 }
@@ -288,7 +288,7 @@ export default function EnhancedTable() {
                 console.error(error);
                 setSnackbar({
                     open: true,
-                    message: "Błąd ładowania danych",
+                    message: "Bookings loading filed",
                     type: "error"
                 });
             }

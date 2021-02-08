@@ -148,7 +148,7 @@ const EnhancedTableToolbar = (props) => {
     
       var config = {
         method: 'delete',
-        url: 'http://localhost:8080/reservations/'+element,
+        url: 'http://flatly.us-east-2.elasticbeanstalk.com/reservations/'+element,
         headers: { 
           'security-header': token,
           'Access-Control-Allow-Origin':''
@@ -167,7 +167,7 @@ const EnhancedTableToolbar = (props) => {
           try {
             var config = {
               method: 'get',
-              url: 'http://localhost:8080/flats/res/'+flatId,
+              url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats/res/'+flatId,
               headers: { 
                 'security-header': token
               }
@@ -178,7 +178,7 @@ const EnhancedTableToolbar = (props) => {
               console.error(error);
               setSnackbar({
                   open: true,
-                  message: "Błąd ładowania danych",
+                  message: "Loading data failed",
                   type: "error"
               });
           }
@@ -282,7 +282,7 @@ export default function EnhancedTable(props) {
         try {
           var config = {
             method: 'get',
-            url: 'http://localhost:8080/flats/res/'+flatId,
+            url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats/res/'+flatId,
             headers: { 
               'security-header': token
             }
@@ -293,7 +293,7 @@ export default function EnhancedTable(props) {
             console.error(error);
             setSnackbar({
                 open: true,
-                message: "Błąd ładowania danych",
+                message: "Loading data failed",
                 type: "error"
             });
         }

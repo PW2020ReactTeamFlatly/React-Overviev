@@ -158,7 +158,7 @@ const variable = [{
         {
           var config = {
             method: 'post',
-            url: 'http://localhost:8080/flats',
+            url: 'http://flatly.us-east-2.elasticbeanstalk.com/flats',
             headers: { 
               'security-header': token, 
               'Content-Type': 'application/json'
@@ -172,14 +172,17 @@ const variable = [{
           dataForm.append('file', file);
           var config2 = {
             method: 'post',
-            url: "http://localhost:8080/flats/"+dt.data+"/photo",
+            url: "http://flatly.us-east-2.elasticbeanstalk.com/flats/"+dt.data+"/photo",
             headers: { 
               'security-header': token, 
               'Content-Type': 'application/json'
             },
             data : dataForm
           };
-          await axios(config2);
+          if(file)
+          {
+            await axios(config2);
+          }
         }
         catch(error) {
           setPosted(false);
