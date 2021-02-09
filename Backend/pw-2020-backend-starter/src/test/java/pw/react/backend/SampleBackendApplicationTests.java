@@ -22,7 +22,7 @@ class SampleBackendApplicationTests {
 
 	//@Test
 	void whenConsume_thenReturnQuote() {
-		final Quote quote = httpService.consume("");
-		assertThat(quote).isNotNull();
+		//final Quote quote = httpService.consume("");
+		//assertThat(quote).isNotNull();
 	}
 }

@@ -18,10 +18,25 @@ import static java.util.stream.Collectors.toSet;
 @Configuration
 public class MainConfig {
 
-    @Value(value = "${cors.urls}")
+    //@Value(value = "${cors.urls}")
+    //private String corsUrls;
+    //@Value(value = "${cors.mappings}")
+    //private String corsMappings;
+
+    @Value(value = "${cors-urls}")
     private String corsUrls;
-    @Value(value = "${cors.mappings}")
+    @Value(value = "${cors-mappings}")
     private String corsMappings;
+
+    @Value("${carly-url}")
+    private String carlyUrl;
+    @Value("${flatly-url}")
+    private String flatlyUrl;
+    @Value("${parkly-url}")
+    private String parklyUrl;
+    @Value("${integration-url}")
+    private String integrationUrl;
+
 
     @PostConstruct
     private void init() {
@@ -38,8 +53,12 @@ public class MainConfig {
     }
 
     @Bean
-    public HttpClient httpClient(RestTemplate restTemplate) {
-        return new HttpService(restTemplate);
+    public HttpClient httpClient(RestTemplate restTemplate, SecurityProvider securityProvider) {
+        return new HttpService(restTemplate,securityProvider)
+                .withCarlyUrl(carlyUrl)
+                .withFlatlyUrl(flatlyUrl)
+                .withParklyUrl(parklyUrl)
+                .withIntegrationUrl(integrationUrl);
     }
 
     @Bean

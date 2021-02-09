@@ -17,3 +17,11 @@ CREATE TABLE company_logo (
     data BYTEA;
     CONSTRAINT id_companyId PRIMARY KEY(id, company_id)
 );
+
+DROP TABLE IF EXISTS user;
+CREATE TABLE user (
+                              id VARCHAR(250) PRIMARY KEY,
+                              user_login VARCHAR(250),
+                              user_password VARCHAR(250),
+                              user_key VARCHAR(250)
+);

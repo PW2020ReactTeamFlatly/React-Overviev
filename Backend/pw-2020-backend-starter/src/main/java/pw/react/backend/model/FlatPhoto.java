@@ -7,10 +7,10 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "company_logo")
+@Table(name = "flat_photo")
 @Data
 @NoArgsConstructor
-public class CompanyLogo {
+public class FlatPhoto {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -18,14 +18,14 @@ public class CompanyLogo {
     private String id;
     private String fileName;
     private String fileType;
-    private long companyId;
+    private long flatId;
     @Lob
     private byte[] data;
 
-    public CompanyLogo(String fileName, String fileType, long companyId, byte[] data) {
+    public FlatPhoto(String fileName, String fileType, long flatId, byte[] data) {
         this.fileName = fileName;
         this.fileType = fileType;
-        this.companyId = companyId;
+        this.flatId = flatId;
         this.data = data;
     }
 }
