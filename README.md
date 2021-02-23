@@ -1,4 +1,4 @@
-# Application managing  flats
+# Apartment management application
 
 University project.
 
