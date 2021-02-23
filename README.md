@@ -1,10 +1,9 @@
-# React app mmanageing flats
+# Application managing  flats
 
-Project of flatly wednesday group.
+University project.
 
 - /Backend   - backend Java + MySQL database
 - /WebApp    - frontend React + Material Ui library
 - /MobileApp - mobile app ReactNative
 
 
-...
